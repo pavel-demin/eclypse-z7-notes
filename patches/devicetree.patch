@@ -1,0 +1,46 @@
+diff -rupN pcw.dtsi.old pcw.dtsi
+--- pcw.dtsi.old
++++ pcw.dtsi
+@@ -51,9 +51,10 @@
+ 	status = "okay";
+ };
+ &usb0 {
+-	phy_type = "ulpi";
++	dr_mode = "host";
++	usb-phy = <&usb_phy0>;
+ 	status = "okay";
+-	usb-reset = <&gpio0 46 0>;
++	xlnx,phy-reset-gpio = <&gpio0 46 0>;
+ };
+ &clkc {
+ 	fclk-enable = <0x1>;
+diff -rupN system-top.dts.old system-top.dts
+--- system-top.dts.old
++++ system-top.dts
+@@ -13,6 +13,18 @@
+ 		bootargs = "console=ttyPS0,115200 earlyprintk earlycon";
+ 		stdout-path = "serial0:115200n8";
+ 	};
++	usb_phy0: phy0 {
++		#phy-cells = <0>;
++		compatible = "ulpi-phy";
++		reg = <0xe0002000 0x1000>;
++		view-port = <0x0170>;
++		drv-vbus;
++	};
++	pps {
++		compatible = "pps-gpio";
++		gpios = <&gpio0 54 0>;
++		capture-clear;
++	};
+ 	aliases {
+ 		ethernet0 = &gem0;
+ 		i2c0 = &i2c1;
+@@ -21,6 +33,6 @@
+ 	};
+ 	memory {
+ 		device_type = "memory";
+-		reg = <0x0 0x40000000>;
++		reg = <0x0 0x3E000000>;
+ 	};
+ };

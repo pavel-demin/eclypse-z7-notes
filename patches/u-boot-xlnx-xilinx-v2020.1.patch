@@ -1,0 +1,73 @@
+diff -rupN old/u-boot-xlnx-xilinx-v2020.1/arch/arm/dts/Makefile u-boot-xlnx-xilinx-v2020.1/arch/arm/dts/Makefile
+--- old/u-boot-xlnx-xilinx-v2020.1/arch/arm/dts/Makefile
++++ u-boot-xlnx-xilinx-v2020.1/arch/arm/dts/Makefile
+@@ -261,7 +261,8 @@ dtb-$(CONFIG_ARCH_ZYNQ) += \
+ 	zynq-zed.dtb \
+ 	zynq-zturn.dtb \
+ 	zynq-zybo.dtb \
+-	zynq-zybo-z7.dtb
++	zynq-zybo-z7.dtb \
++	zynq-eclypse-z7.dtb
+ dtb-$(CONFIG_ARCH_ZYNQMP) += \
+ 	avnet-ultra96-rev1.dtb			\
+ 	avnet-ultrazedev-cc-v1.0-ultrazedev-som-v1.0.dtb	\
+diff -rupN old/u-boot-xlnx-xilinx-v2020.1/board/xilinx/common/board.c u-boot-xlnx-xilinx-v2020.1/board/xilinx/common/board.c
+--- old/u-boot-xlnx-xilinx-v2020.1/board/xilinx/common/board.c
++++ u-boot-xlnx-xilinx-v2020.1/board/xilinx/common/board.c
+@@ -8,33 +8,25 @@
+ #include <asm/sections.h>
+ #include <dm/uclass.h>
+ #include <i2c.h>
++#include <spi.h>
++#include <spi_flash.h>
+ #include "board.h"
+ 
+ int zynq_board_read_rom_ethaddr(unsigned char *ethaddr)
+ {
+ 	int ret = -EINVAL;
+ 
+-#if defined(CONFIG_ZYNQ_GEM_I2C_MAC_OFFSET)
+-	struct udevice *dev;
+-	ofnode eeprom;
+-
+-	eeprom = ofnode_get_chosen_node("xlnx,eeprom");
+-	if (!ofnode_valid(eeprom))
++	struct spi_flash *flash;
++	flash = spi_flash_probe(CONFIG_SF_DEFAULT_BUS,
++				CONFIG_SF_DEFAULT_CS,
++				CONFIG_SF_DEFAULT_SPEED,
++				CONFIG_SF_DEFAULT_MODE);
++	if (!flash)
+ 		return -ENODEV;
+ 
+-	debug("%s: Path to EEPROM %s\n", __func__,
+-	      ofnode_get_chosen_prop("xlnx,eeprom"));
+-
+-	ret = uclass_get_device_by_ofnode(UCLASS_I2C_EEPROM, eeprom, &dev);
+-	if (ret)
+-		return ret;
+-
+-	ret = dm_i2c_read(dev, CONFIG_ZYNQ_GEM_I2C_MAC_OFFSET, ethaddr, 6);
+-	if (ret)
+-		debug("%s: I2C EEPROM MAC address read failed\n", __func__);
+-	else
+-		debug("%s: I2C EEPROM MAC %pM\n", __func__, ethaddr);
+-#endif
++	flash->read_opcode = 0x4b;
++	ret = spi_flash_read(flash, 0x20, 6, ethaddr);
++	spi_flash_free(flash);
+ 
+ 	return ret;
+ }
+diff -rupN old/u-boot-xlnx-xilinx-v2020.1/common/main.c u-boot-xlnx-xilinx-v2020.1/common/main.c
+--- old/u-boot-xlnx-xilinx-v2020.1/common/main.c
++++ u-boot-xlnx-xilinx-v2020.1/common/main.c
+@@ -59,6 +59,8 @@ void main_loop(void)
+ 	if (cli_process_fdt(&s))
+ 		cli_secure_boot_cmd(s);
+ 
++	env_set("sdboot", "echo Importing environment from SD... && mmcinfo && load mmc 0 0x2000000 uEnv.txt && env import -t 0x2000000 ${filesize} && boot");
++
+ 	autoboot_command(s);
+ 
+ 	cli_loop();

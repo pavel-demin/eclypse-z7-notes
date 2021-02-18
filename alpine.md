@@ -29,9 +29,9 @@ The wired interface is by default configured to request an IP address via DHCP. 
 
 The configuration of the IP addresses is in [/etc/dhcpcd.conf](https://github.com/pavel-demin/eclypse-z7-notes/blob/master/alpine/etc/dhcpcd.conf). More information about [/etc/dhcpcd.conf](https://github.com/pavel-demin/eclypse-z7-notes/blob/master/alpine/etc/dhcpcd.conf) can be found at [this link](https://www.mankier.com/5/dhcpcd.conf).
 
-From systems with enabled DNS Service Discovery (DNS-SD), Eclypse Z7 can be accessed as `sdr-f0xxxx.local`, where `f0xxxx` are the last 6 characters from the MAC address written on the Ethernet connector.
+From systems with enabled DNS Service Discovery (DNS-SD), Eclypse Z7 can be accessed as `sdr-03xxxx.local`, where `03xxxx` are the last 6 characters from the MAC address written on the Ethernet connector.
 
-In the local networks with enabled local DNS, Eclypse Z7 can also be accessed as `sdr-f0xxxx`.
+In the local networks with enabled local DNS, Eclypse Z7 can also be accessed as `sdr-03xxxx`.
 
 Useful commands
 -----

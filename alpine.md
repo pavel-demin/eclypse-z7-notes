@@ -73,7 +73,7 @@ apk add python3
 lbu commit -d
 {% endhighlight %}
 
-Editing WSPR configuration:
+Editing a file:
 {% highlight bash %}
 # make SD card writable
 rw

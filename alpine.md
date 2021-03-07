@@ -78,7 +78,7 @@ Editing a file:
 # make SD card writable
 rw
 
-# edit decode-wspr.sh
+# edit start.sh
 nano apps/sdr_receiver_hpsdr/start.sh
 
 # make SD card read-only

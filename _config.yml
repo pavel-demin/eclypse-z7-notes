@@ -4,7 +4,7 @@ description: Notes on the Eclypse Z7 development board
 baseurl: /eclypse-z7-notes
 url: https://pavel-demin.github.io
 
-release-image: https://github.com/pavel-demin/eclypse-z7-notes/releases/download/20210218/eclypse-z7-alpine-3.12-armv7-20210218.zip
+release-image: https://github.com/pavel-demin/eclypse-z7-notes/releases/download/20210317/eclypse-z7-alpine-3.12-armv7-20210317.zip
 
 # Build settings
 markdown: kramdown

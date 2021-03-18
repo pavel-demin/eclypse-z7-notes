@@ -211,26 +211,8 @@ cell pavel-demin:user:axis_zmod_dac dac_0 {
   dac_data dac_data_o
 }
 
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins cfg_0/S_AXI]
+addr 0x40001000 4K cfg_0/S_AXI /ps_0/M_AXI_GP0
 
-addr 0x40001000 4K cfg_0/S_AXI
+addr 0x40002000 4K writer_0/S_AXI /ps_0/M_AXI_GP0
 
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins writer_0/S_AXI]
-
-addr 0x40002000 4K writer_0/S_AXI
-
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins writer_1/S_AXI]
-
-addr 0x40003000 4K writer_1/S_AXI
+addr 0x40003000 4K writer_1/S_AXI /ps_0/M_AXI_GP0

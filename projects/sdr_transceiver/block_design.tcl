@@ -194,29 +194,11 @@ cell pavel-demin:user:axis_zmod_dac dac_0 {
   dac_data dac_data_o
 }
 
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins cfg_0/S_AXI]
+addr 0x40000000 4K cfg_0/S_AXI /ps_0/M_AXI_GP0
 
-addr 0x40000000 4K cfg_0/S_AXI
+addr 0x40001000 4K writer_0/S_AXI /ps_0/M_AXI_GP0
 
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins writer_0/S_AXI]
-
-addr 0x40001000 4K writer_0/S_AXI
-
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins writer_1/S_AXI]
-
-addr 0x40002000 4K writer_1/S_AXI
+addr 0x40002000 4K writer_1/S_AXI /ps_0/M_AXI_GP0
 
 # TRX
 
@@ -227,37 +209,13 @@ module trx_0 {
   tx_0/mult_0/M_AXIS_DOUT comb_0/S00_AXIS
 }
 
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins trx_0/cfg_0/S_AXI]
+addr 0x40003000 4K trx_0/cfg_0/S_AXI /ps_0/M_AXI_GP0
 
-addr 0x40003000 4K trx_0/cfg_0/S_AXI
+addr 0x40004000 4K trx_0/sts_0/S_AXI /ps_0/M_AXI_GP0
 
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins trx_0/sts_0/S_AXI]
+addr 0x40010000 32K trx_0/rx_0/reader_0/S_AXI /ps_0/M_AXI_GP0
 
-addr 0x40004000 4K trx_0/sts_0/S_AXI
-
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins trx_0/rx_0/reader_0/S_AXI]
-
-addr 0x40010000 32K trx_0/rx_0/reader_0/S_AXI
-
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins trx_0/tx_0/writer_0/S_AXI]
-
-addr 0x40018000 32K trx_0/tx_0/writer_0/S_AXI
+addr 0x40018000 32K trx_0/tx_0/writer_0/S_AXI /ps_0/M_AXI_GP0
 
 module trx_1 {
   source projects/sdr_transceiver/trx.tcl
@@ -266,34 +224,10 @@ module trx_1 {
   tx_0/mult_0/M_AXIS_DOUT comb_0/S01_AXIS
 }
 
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins trx_1/cfg_0/S_AXI]
+addr 0x40005000 4K trx_1/cfg_0/S_AXI /ps_0/M_AXI_GP0
 
-addr 0x40005000 4K trx_1/cfg_0/S_AXI
+addr 0x40006000 4K trx_1/sts_0/S_AXI /ps_0/M_AXI_GP0
 
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins trx_1/sts_0/S_AXI]
+addr 0x40020000 32K trx_1/rx_0/reader_0/S_AXI /ps_0/M_AXI_GP0
 
-addr 0x40006000 4K trx_1/sts_0/S_AXI
-
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins trx_1/rx_0/reader_0/S_AXI]
-
-addr 0x40020000 32K trx_1/rx_0/reader_0/S_AXI
-
-# Create all required interconnections
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {
-  Master /ps_0/M_AXI_GP0
-  Clk Auto
-} [get_bd_intf_pins trx_1/tx_0/writer_0/S_AXI]
-
-addr 0x40028000 32K trx_1/tx_0/writer_0/S_AXI
+addr 0x40028000 32K trx_1/tx_0/writer_0/S_AXI /ps_0/M_AXI_GP0

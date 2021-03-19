@@ -81,7 +81,7 @@ ln -s /media/mmcblk0p1/cache $root_dir/etc/apk/cache
 cp -r alpine/etc $root_dir/
 cp -r alpine/apps $root_dir/media/mmcblk0p1/
 
-for project in led_blinker sdr_receiver_hpsdr sdr_transceiver
+for project in led_blinker sdr_receiver_hpsdr sdr_receiver_wide sdr_transceiver
 do
   mkdir -p $root_dir/media/mmcblk0p1/apps/$project
   cp -r projects/$project/server/* $root_dir/media/mmcblk0p1/apps/$project/
@@ -161,7 +161,7 @@ lbu commit -d
 
 apk add patch make gcc gfortran linux-headers
 
-for project in server sdr_receiver_hpsdr sdr_transceiver
+for project in server sdr_receiver_hpsdr sdr_receiver_wide sdr_transceiver
 do
   make -C /media/mmcblk0p1/apps/\$project clean
   make -C /media/mmcblk0p1/apps/\$project

@@ -16,10 +16,11 @@ cell xilinx.com:ip:clk_wiz pll_0 {
 # Create processing_system7
 cell xilinx.com:ip:processing_system7 ps_0 {
   PCW_IMPORT_BOARD_PRESET cfg/eclypse_z7.xml
-  PCW_USE_S_AXI_HP0 1
+  PCW_USE_S_AXI_ACP 1
+  PCW_USE_DEFAULT_ACP_USER_VAL 1
 } {
   M_AXI_GP0_ACLK pll_0/clk_out1
-  S_AXI_HP0_ACLK pll_0/clk_out1
+  S_AXI_ACP_ACLK pll_0/clk_out1
 }
 
 # Create all required interconnections
@@ -41,28 +42,28 @@ cell xilinx.com:ip:proc_sys_reset rst_0 {} {
 
 # Create axi_cfg_register
 cell pavel-demin:user:axi_cfg_register cfg_0 {
-  CFG_DATA_WIDTH 224
+  CFG_DATA_WIDTH 256
   AXI_ADDR_WIDTH 32
   AXI_DATA_WIDTH 32
 }
 
 # Create port_slicer
 cell pavel-demin:user:port_slicer slice_0 {
-  DIN_WIDTH 224 DIN_FROM 0 DIN_TO 0
+  DIN_WIDTH 256 DIN_FROM 0 DIN_TO 0
 } {
   din cfg_0/cfg_data
 }
 
 # Create port_slicer
 cell pavel-demin:user:port_slicer slice_1 {
-  DIN_WIDTH 224 DIN_FROM 1 DIN_TO 1
+  DIN_WIDTH 256 DIN_FROM 1 DIN_TO 1
 } {
   din cfg_0/cfg_data
 }
 
 # Create port_slicer
 cell pavel-demin:user:port_slicer slice_2 {
-  DIN_WIDTH 224 DIN_FROM 11 DIN_TO 8
+  DIN_WIDTH 256 DIN_FROM 11 DIN_TO 8
 } {
   din cfg_0/cfg_data
   dout dac_cfg_o
@@ -70,7 +71,7 @@ cell pavel-demin:user:port_slicer slice_2 {
 
 # Create port_slicer
 cell pavel-demin:user:port_slicer slice_3 {
-  DIN_WIDTH 224 DIN_FROM 25 DIN_TO 16
+  DIN_WIDTH 256 DIN_FROM 25 DIN_TO 16
 } {
   din cfg_0/cfg_data
   dout adc_cfg_o
@@ -78,7 +79,14 @@ cell pavel-demin:user:port_slicer slice_3 {
 
 # Create port_slicer
 cell pavel-demin:user:port_slicer slice_4 {
-  DIN_WIDTH 224 DIN_FROM 47 DIN_TO 32
+  DIN_WIDTH 256 DIN_FROM 63 DIN_TO 32
+} {
+  din cfg_0/cfg_data
+}
+
+# Create port_slicer
+cell pavel-demin:user:port_slicer slice_5 {
+  DIN_WIDTH 256 DIN_FROM 79 DIN_TO 64
 } {
   din cfg_0/cfg_data
 }
@@ -199,8 +207,8 @@ cell pavel-demin:user:axis_zmod_dac dac_0 {
 for {set i 0} {$i <= 3} {incr i} {
 
   # Create port_slicer
-  cell pavel-demin:user:port_slicer slice_[expr $i + 5] {
-    DIN_WIDTH 224 DIN_FROM [expr 32 * $i + 95] DIN_TO [expr 32 * $i + 64]
+  cell pavel-demin:user:port_slicer slice_[expr $i + 6] {
+    DIN_WIDTH 256 DIN_FROM [expr 32 * $i + 127] DIN_TO [expr 32 * $i + 96]
   } {
     din cfg_0/cfg_data
   }
@@ -209,7 +217,7 @@ for {set i 0} {$i <= 3} {incr i} {
   cell pavel-demin:user:axis_constant phase_$i {
     AXIS_TDATA_WIDTH 32
   } {
-    cfg_data slice_[expr $i + 5]/dout
+    cfg_data slice_[expr $i + 6]/dout
     aclk pll_0/clk_out1
   }
 
@@ -275,7 +283,7 @@ for {set i 0} {$i <= 3} {incr i} {
   cell pavel-demin:user:axis_variable rate_$i {
     AXIS_TDATA_WIDTH 16
   } {
-    cfg_data slice_4/dout
+    cfg_data slice_5/dout
     aclk pll_0/clk_out1
     aresetn rst_0/peripheral_aresetn
   }
@@ -358,19 +366,14 @@ cell xilinx.com:ip:axis_subset_converter subset_0 {
 
 # DMA
 
-# Create xlconstant
-cell xilinx.com:ip:xlconstant const_1 {
-  CONST_WIDTH 32
-  CONST_VAL 1040187392
-}
-
 # Create axis_ram_writer
 cell pavel-demin:user:axis_ram_writer writer_2 {
   ADDR_WIDTH 16
+  AXI_ID_WIDTH 3
 } {
   S_AXIS subset_0/M_AXIS
-  M_AXI ps_0/S_AXI_HP0
-  cfg_data const_1/dout
+  M_AXI ps_0/S_AXI_ACP
+  cfg_data slice_4/dout
   aclk pll_0/clk_out1
   aresetn slice_1/dout
 }
@@ -380,8 +383,8 @@ cell pavel-demin:user:axis_ram_writer writer_2 {
 for {set i 0} {$i <= 1} {incr i} {
 
   # Create port_slicer
-  cell pavel-demin:user:port_slicer slice_[expr $i + 9] {
-    DIN_WIDTH 224 DIN_FROM [expr 16 * $i + 207] DIN_TO [expr 16 * $i + 192]
+  cell pavel-demin:user:port_slicer slice_[expr $i + 10] {
+    DIN_WIDTH 256 DIN_FROM [expr 16 * $i + 239] DIN_TO [expr 16 * $i + 224]
   } {
     din cfg_0/cfg_data
   }
@@ -397,7 +400,7 @@ for {set i 0} {$i <= 1} {incr i} {
     P_WIDTH 15
   } {
     A dds_[expr $i + 2]/m_axis_data_tdata
-    B slice_[expr $i + 7]/dout
+    B slice_[expr $i + 10]/dout
     CARRYIN lfsr_0/m_axis_tdata
     CLK pll_0/clk_out1
   }
@@ -434,4 +437,4 @@ addr 0x40002000 4K writer_0/S_AXI /ps_0/M_AXI_GP0
 
 addr 0x40003000 4K writer_1/S_AXI /ps_0/M_AXI_GP0
 
-assign_bd_address [get_bd_addr_segs ps_0/S_AXI_HP0/HP0_DDR_LOWOCM]
+assign_bd_address [get_bd_addr_segs ps_0/S_AXI_ACP/ACP_DDR_LOWOCM]

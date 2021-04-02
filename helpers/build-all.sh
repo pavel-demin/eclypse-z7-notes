@@ -6,7 +6,7 @@ make -j $JOBS cores
 
 make NAME=led_blinker all
 
-PRJS="sdr_transceiver sdr_receiver_hpsdr"
+PRJS="sdr_receiver_hpsdr sdr_receiver_wide sdr_transceiver"
 
 printf "%s\n" $PRJS | xargs -n 1 -P $JOBS -I {} make NAME={} bit
 

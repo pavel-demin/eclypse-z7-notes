@@ -34,7 +34,7 @@ sudo apt-get update
 
 sudo apt-get --no-install-recommends install \
   build-essential bison flex git curl ca-certificates sudo \
-  libxrender1 libxtst6 libxi6 lib32ncurses5 \
+  xvfb fontconfig libxrender1 libxtst6 libxi6 lib32ncurses5 \
   bc u-boot-tools device-tree-compiler libncurses5-dev \
   libssl-dev qemu-user-static binfmt-support zip \
   squashfs-tools dosfstools parted debootstrap zerofree

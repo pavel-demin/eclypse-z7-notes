@@ -7,7 +7,8 @@ module axis_ram_writer #
   parameter integer AXI_ID_WIDTH = 6,
   parameter integer AXI_ADDR_WIDTH = 32,
   parameter integer AXI_DATA_WIDTH = 64,
-  parameter integer AXIS_TDATA_WIDTH = 64
+  parameter integer AXIS_TDATA_WIDTH = 64,
+  parameter integer FIFO_WRITE_DEPTH = 512
 )
 (
   // System signals
@@ -45,36 +46,40 @@ module axis_ram_writer #
     for(clogb2 = 0; value > 0; clogb2 = clogb2 + 1) value = value >> 1;
   endfunction
 
-  localparam integer ADDR_SIZE = clogb2((AXI_DATA_WIDTH/8)-1);
+  localparam integer ADDR_SIZE = clogb2(AXI_DATA_WIDTH/8 - 1);
+  localparam integer COUNT_SIZE = clogb2(FIFO_WRITE_DEPTH*AXIS_TDATA_WIDTH/AXI_DATA_WIDTH - 1) + 1;
 
   reg int_awvalid_reg, int_awvalid_next;
   reg int_wvalid_reg, int_wvalid_next;
   reg [ADDR_WIDTH-1:0] int_addr_reg, int_addr_next;
-  reg [AXI_ID_WIDTH-1:0] int_wid_reg, int_wid_next;
+  reg [AXI_ID_WIDTH-1:0] int_awid_reg, int_awid_next;
 
   wire int_full_wire, int_empty_wire, int_rden_wire;
   wire int_wlast_wire, int_tready_wire;
-  wire [71:0] int_wdata_wire;
+  wire [COUNT_SIZE-1:0] int_count_wire;
+  wire [AXI_DATA_WIDTH-1:0] int_wdata_wire;
 
   assign int_tready_wire = ~int_full_wire;
   assign int_wlast_wire = &int_addr_reg[3:0];
   assign int_rden_wire = m_axi_wready & int_wvalid_reg;
 
-  FIFO36E1 #(
-    .FIRST_WORD_FALL_THROUGH("TRUE"),
-    .ALMOST_EMPTY_OFFSET(13'hf),
-    .DATA_WIDTH(72),
-    .FIFO_MODE("FIFO36_72")
+  xpm_fifo_sync #(
+    .WRITE_DATA_WIDTH(AXIS_TDATA_WIDTH),
+    .FIFO_WRITE_DEPTH(FIFO_WRITE_DEPTH),
+    .READ_DATA_WIDTH(AXI_DATA_WIDTH),
+    .READ_MODE("fwft"),
+    .FIFO_READ_LATENCY(0),
+    .USE_ADV_FEATURES("0400"),
+    .RD_DATA_COUNT_WIDTH(COUNT_SIZE)
   ) fifo_0 (
-    .FULL(int_full_wire),
-    .ALMOSTEMPTY(int_empty_wire),
-    .RST(~aresetn),
-    .WRCLK(aclk),
-    .WREN(int_tready_wire & s_axis_tvalid),
-    .DI({{(72-AXIS_TDATA_WIDTH){1'b0}}, s_axis_tdata}),
-    .RDCLK(aclk),
-    .RDEN(int_rden_wire),
-    .DO(int_wdata_wire)
+    .full(int_full_wire),
+    .rd_data_count(int_count_wire),
+    .rst(~aresetn),
+    .wr_clk(aclk),
+    .wr_en(int_tready_wire & s_axis_tvalid),
+    .din(s_axis_tdata),
+    .rd_en(int_rden_wire),
+    .dout(int_wdata_wire)
   );
 
   always @(posedge aclk)
@@ -84,14 +89,14 @@ module axis_ram_writer #
       int_awvalid_reg <= 1'b0;
       int_wvalid_reg <= 1'b0;
       int_addr_reg <= {(ADDR_WIDTH){1'b0}};
-      int_wid_reg <= {(AXI_ID_WIDTH){1'b0}};
+      int_awid_reg <= {(AXI_ID_WIDTH){1'b0}};
     end
     else
     begin
       int_awvalid_reg <= int_awvalid_next;
       int_wvalid_reg <= int_wvalid_next;
       int_addr_reg <= int_addr_next;
-      int_wid_reg <= int_wid_next;
+      int_awid_reg <= int_awid_next;
     end
   end
 
@@ -100,9 +105,9 @@ module axis_ram_writer #
     int_awvalid_next = int_awvalid_reg;
     int_wvalid_next = int_wvalid_reg;
     int_addr_next = int_addr_reg;
-    int_wid_next = int_wid_reg;
+    int_awid_next = int_awid_reg;
 
-    if(~int_empty_wire & ~int_awvalid_reg & ~int_wvalid_reg)
+    if((int_count_wire > 4'd15) & ~int_awvalid_reg & ~int_wvalid_reg)
     begin
       int_awvalid_next = 1'b1;
       int_wvalid_next = 1'b1;
@@ -120,29 +125,29 @@ module axis_ram_writer #
 
     if(m_axi_wready & int_wlast_wire)
     begin
-      int_wid_next = int_wid_reg + 1'b1;
-      if(int_empty_wire)
+      int_awid_next = int_awid_reg + 1'b1;
+      if(int_count_wire > 5'd16)
       begin
-        int_wvalid_next = 1'b0;
+        int_awvalid_next = 1'b1;
       end
       else
       begin
-        int_awvalid_next = 1'b1;
+        int_wvalid_next = 1'b0;
       end
     end
   end
 
   assign sts_data = int_addr_reg;
 
-  assign m_axi_awid = int_wid_reg;
+  assign m_axi_awid = int_awid_reg;
   assign m_axi_awaddr = cfg_data + {int_addr_reg, {(ADDR_SIZE){1'b0}}};
   assign m_axi_awlen = 4'd15;
   assign m_axi_awsize = ADDR_SIZE;
   assign m_axi_awburst = 2'b01;
-  assign m_axi_awcache = 4'b1111;
+  assign m_axi_awcache = 4'b0110;
   assign m_axi_awvalid = int_awvalid_reg;
-  assign m_axi_wid = int_wid_reg;
-  assign m_axi_wdata = int_wdata_wire[AXI_DATA_WIDTH-1:0];
+  assign m_axi_wid = int_awid_reg;
+  assign m_axi_wdata = int_wdata_wire;
   assign m_axi_wstrb = {(AXI_DATA_WIDTH/8){1'b1}};
   assign m_axi_wlast = int_wlast_wire;
   assign m_axi_wvalid = int_wvalid_reg;

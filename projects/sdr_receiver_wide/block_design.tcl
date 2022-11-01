@@ -244,7 +244,7 @@ for {set i 0} {$i <= 3} {incr i} {
 # Create axis_lfsr
 cell pavel-demin:user:axis_lfsr lfsr_0 {} {
   aclk pll_0/clk_out1
-  aresetn rst_0/peripheral_aresetn
+  aresetn slice_0/dout
 }
 
 for {set i 0} {$i <= 3} {incr i} {
@@ -285,7 +285,7 @@ for {set i 0} {$i <= 3} {incr i} {
   } {
     cfg_data slice_5/dout
     aclk pll_0/clk_out1
-    aresetn rst_0/peripheral_aresetn
+    aresetn slice_0/dout
   }
 
   # Create cic_compiler
@@ -309,7 +309,7 @@ for {set i 0} {$i <= 3} {incr i} {
     s_axis_data_tvalid const_0/dout
     S_AXIS_CONFIG rate_$i/M_AXIS
     aclk pll_0/clk_out1
-    aresetn rst_0/peripheral_aresetn
+    aresetn slice_0/dout
   }
 
 }
@@ -344,6 +344,7 @@ cell xilinx.com:ip:fir_compiler fir_0 {
   CLOCK_FREQUENCY 100
   OUTPUT_ROUNDING_MODE Convergent_Rounding_to_Even
   OUTPUT_WIDTH 18
+  M_DATA_HAS_TREADY true
   HAS_ARESETN true
 } {
   S_AXIS_DATA comb_0/M_AXIS
@@ -370,6 +371,8 @@ cell xilinx.com:ip:axis_subset_converter subset_0 {
 cell pavel-demin:user:axis_ram_writer writer_2 {
   ADDR_WIDTH 16
   AXI_ID_WIDTH 3
+  AXIS_TDATA_WIDTH 64
+  FIFO_WRITE_DEPTH 512
 } {
   S_AXIS subset_0/M_AXIS
   M_AXI ps_0/S_AXI_ACP

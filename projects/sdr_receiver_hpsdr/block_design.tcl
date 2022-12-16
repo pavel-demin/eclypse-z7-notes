@@ -2,9 +2,9 @@
 cell xilinx.com:ip:clk_wiz pll_0 {
   PRIMITIVE PLL
   PRIM_IN_FREQ.VALUE_SRC USER
-  PRIM_IN_FREQ 100.0
+  PRIM_IN_FREQ 122.88
   CLKOUT1_USED true
-  CLKOUT1_REQUESTED_OUT_FREQ 100.0
+  CLKOUT1_REQUESTED_OUT_FREQ 122.88
   JITTER_SEL Min_O_Jitter
   JITTER_OPTIONS PS
   CLKIN1_UI_JITTER 600
@@ -16,9 +16,20 @@ cell xilinx.com:ip:clk_wiz pll_0 {
 # Create processing_system7
 cell xilinx.com:ip:processing_system7 ps_0 {
   PCW_IMPORT_BOARD_PRESET cfg/eclypse_z7.xml
+  PCW_USE_M_AXI_GP1 1
 } {
   M_AXI_GP0_ACLK pll_0/clk_out1
+  M_AXI_GP1_ACLK ps_0/FCLK_CLK0
 }
+
+make_bd_intf_pins_external [get_bd_intf_pins ps_0/IIC_0]
+
+# Create axi_gpio
+cell xilinx.com:ip:axi_gpio gpio_0 {
+  C_GPIO_WIDTH 5
+}
+
+make_bd_intf_pins_external [get_bd_intf_pins gpio_0/GPIO]
 
 # Create all required interconnections
 apply_bd_automation -rule xilinx.com:bd_rule:processing_system7 -config {
@@ -69,30 +80,6 @@ cell pavel-demin:user:axis_spi spi_0 {
 
 # ADC
 
-# Create clk_wiz
-cell xilinx.com:ip:clk_wiz pll_1 {
-  PRIMITIVE PLL
-  PRIM_IN_FREQ.VALUE_SRC USER
-  PRIM_IN_FREQ 100.0
-  CLKOUT1_USED true
-  CLKOUT1_REQUESTED_OUT_FREQ 100.0
-  JITTER_SEL Min_O_Jitter
-  JITTER_OPTIONS PS
-  CLKIN1_UI_JITTER 600
-  USE_RESET false
-} {
-  clk_in1 ps_0/FCLK_CLK0
-}
-
-# Create util_ds_buf
-cell xilinx.com:ip:util_ds_buf obufds_0 {
-  C_BUF_TYPE OBUFDS
-} {
-  OBUF_IN pll_1/clk_out1
-  OBUF_DS_N adc_clk_n_o
-  OBUF_DS_P adc_clk_p_o
-}
-
 # Create axis_zmod_dac
 cell pavel-demin:user:axis_zmod_adc adc_0 {
   ADC_DATA_WIDTH 14
@@ -121,14 +108,6 @@ cell pavel-demin:user:port_slicer rst_slice_0 {
 
 # Create port_slicer
 cell pavel-demin:user:port_slicer cfg_slice_0 {
-  DIN_WIDTH 320 DIN_FROM 25 DIN_TO 16
-} {
-  din cfg_0/cfg_data
-  dout adc_cfg_o
-}
-
-# Create port_slicer
-cell pavel-demin:user:port_slicer cfg_slice_1 {
   DIN_WIDTH 320 DIN_FROM 319 DIN_TO 32
 } {
   din cfg_0/cfg_data
@@ -138,23 +117,23 @@ module rx_0 {
   source projects/sdr_receiver_hpsdr/rx.tcl
 } {
   slice_0/din rst_slice_0/dout
-  slice_1/din cfg_slice_1/dout
-  slice_2/din cfg_slice_1/dout
-  slice_3/din cfg_slice_1/dout
-  slice_4/din cfg_slice_1/dout
-  slice_5/din cfg_slice_1/dout
-  slice_6/din cfg_slice_1/dout
-  slice_7/din cfg_slice_1/dout
-  slice_8/din cfg_slice_1/dout
-  slice_9/din cfg_slice_1/dout
-  slice_10/din cfg_slice_1/dout
-  slice_11/din cfg_slice_1/dout
-  slice_12/din cfg_slice_1/dout
-  slice_13/din cfg_slice_1/dout
-  slice_14/din cfg_slice_1/dout
-  slice_15/din cfg_slice_1/dout
-  slice_16/din cfg_slice_1/dout
-  slice_17/din cfg_slice_1/dout
+  slice_1/din cfg_slice_0/dout
+  slice_2/din cfg_slice_0/dout
+  slice_3/din cfg_slice_0/dout
+  slice_4/din cfg_slice_0/dout
+  slice_5/din cfg_slice_0/dout
+  slice_6/din cfg_slice_0/dout
+  slice_7/din cfg_slice_0/dout
+  slice_8/din cfg_slice_0/dout
+  slice_9/din cfg_slice_0/dout
+  slice_10/din cfg_slice_0/dout
+  slice_11/din cfg_slice_0/dout
+  slice_12/din cfg_slice_0/dout
+  slice_13/din cfg_slice_0/dout
+  slice_14/din cfg_slice_0/dout
+  slice_15/din cfg_slice_0/dout
+  slice_16/din cfg_slice_0/dout
+  slice_17/din cfg_slice_0/dout
 }
 
 # STS
@@ -198,6 +177,8 @@ addr 0x40002000 4K writer_0/S_AXI /ps_0/M_AXI_GP0
 
 for {set i 0} {$i <= 7} {incr i} {
 
-  addr 0x4000[format %X [expr $i + 3]]000 4K rx_0/reader_$i/S_AXI /ps_0/M_AXI_GP0
+  addr 0x4001[format %X [expr 2 * $i]]000 8K rx_0/reader_$i/S_AXI /ps_0/M_AXI_GP0
 
 }
+
+addr 0x80000000 4K gpio_0/S_AXI /ps_0/M_AXI_GP1

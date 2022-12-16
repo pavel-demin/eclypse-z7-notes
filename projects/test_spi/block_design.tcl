@@ -16,9 +16,20 @@ cell xilinx.com:ip:clk_wiz pll_0 {
 # Create processing_system7
 cell xilinx.com:ip:processing_system7 ps_0 {
   PCW_IMPORT_BOARD_PRESET cfg/eclypse_z7.xml
+  PCW_USE_M_AXI_GP1 1
 } {
   M_AXI_GP0_ACLK pll_0/clk_out1
+  M_AXI_GP1_ACLK ps_0/FCLK_CLK0
 }
+
+make_bd_intf_pins_external [get_bd_intf_pins ps_0/IIC_0]
+
+# Create axi_gpio
+cell xilinx.com:ip:axi_gpio gpio_0 {
+  C_GPIO_WIDTH 5
+}
+
+make_bd_intf_pins_external [get_bd_intf_pins gpio_0/GPIO]
 
 # Create all required interconnections
 apply_bd_automation -rule xilinx.com:bd_rule:processing_system7 -config {
@@ -33,32 +44,6 @@ cell xilinx.com:ip:xlconstant const_0
 # Create proc_sys_reset
 cell xilinx.com:ip:proc_sys_reset rst_0 {} {
   ext_reset_in const_0/dout
-}
-
-# ADC
-
-# Create clk_wiz
-cell xilinx.com:ip:clk_wiz pll_1 {
-  PRIMITIVE PLL
-  PRIM_IN_FREQ.VALUE_SRC USER
-  PRIM_IN_FREQ 100.0
-  CLKOUT1_USED true
-  CLKOUT1_REQUESTED_OUT_FREQ 100.0
-  JITTER_SEL Min_O_Jitter
-  JITTER_OPTIONS PS
-  CLKIN1_UI_JITTER 600
-  USE_RESET false
-} {
-  clk_in1 ps_0/FCLK_CLK0
-}
-
-# Create util_ds_buf
-cell xilinx.com:ip:util_ds_buf obufds_0 {
-  C_BUF_TYPE OBUFDS
-} {
-  OBUF_IN pll_1/clk_out1
-  OBUF_DS_N adc_clk_n_o
-  OBUF_DS_P adc_clk_p_o
 }
 
 # FIFO
@@ -104,3 +89,5 @@ cell pavel-demin:user:axis_spi spi_0 {
 }
 
 addr 0x40002000 4K writer_0/S_AXI /ps_0/M_AXI_GP0
+
+addr 0x80000000 4K gpio_0/S_AXI /ps_0/M_AXI_GP1

@@ -19,7 +19,7 @@ volatile uint16_t *rx_rate, *rx_cntr, *tx_rate, *tx_cntr;
 volatile uint8_t *rx_rst, *rx_sync, *tx_rst, *tx_sync;
 
 const uint32_t freq_min = 0;
-const uint32_t freq_max = 50000000;
+const uint32_t freq_max = 122880000;
 
 int sock_thread[4] = {-1, -1, -1, -1};
 
@@ -94,16 +94,16 @@ int main(int argc, char *argv[])
   tx_cntr = ((uint16_t *)(sts + 2));
 
   /* set default rx phase increment */
-  *rx_freq = (uint32_t)floor(600000/100.0e6*(1<<30)+0.5);
+  *rx_freq = (uint32_t)floor(600000/122.88e6*(1<<30)+0.5);
   *rx_sync = 0;
   /* set default rx sample rate */
-  *rx_rate = 500;
+  *rx_rate = 640;
 
   /* set default tx phase increment */
-  *tx_freq = (uint32_t)floor(600000/100.0e6*(1<<30)+0.5);
+  *tx_freq = (uint32_t)floor(600000/122.88e6*(1<<30)+0.5);
   *tx_sync = 0;
   /* set default tx sample rate */
-  *tx_rate = 500;
+  *tx_rate = 640;
 
   if((sock_server = socket(AF_INET, SOCK_STREAM, 0)) < 0)
   {
@@ -163,10 +163,10 @@ void *rx_ctrl_handler(void *arg)
   uint32_t command, freq;
 
   /* set default rx phase increment */
-  *rx_freq = (uint32_t)floor(600000/100.0e6*(1<<30)+0.5);
+  *rx_freq = (uint32_t)floor(600000/122.88e6*(1<<30)+0.5);
   *rx_sync = 0;
   /* set default rx sample rate */
-  *rx_rate = 500;
+  *rx_rate = 640;
 
   while(1)
   {
@@ -177,7 +177,7 @@ void *rx_ctrl_handler(void *arg)
         /* set rx phase increment */
         freq = command & 0xfffffff;
         if(freq < freq_min || freq > freq_max) continue;
-        *rx_freq = (uint32_t)floor(freq/100.0e6*(1<<30)+0.5);
+        *rx_freq = (uint32_t)floor(freq/122.88e6*(1<<30)+0.5);
         *rx_sync = freq > 0 ? 0 : 1;
         break;
       case 1:
@@ -185,21 +185,24 @@ void *rx_ctrl_handler(void *arg)
         switch(command & 7)
         {
           case 0:
-            *rx_rate = 2500;
+            *rx_rate = 2560;
             break;
           case 1:
-            *rx_rate = 1000;
+            *rx_rate = 1280;
             break;
           case 2:
-            *rx_rate = 500;
+            *rx_rate = 640;
             break;
           case 3:
-            *rx_rate = 200;
+            *rx_rate = 320;
             break;
           case 4:
-            *rx_rate = 100;
+            *rx_rate = 160;
             break;
           case 5:
+            *rx_rate = 80;
+            break;
+          case 6:
             *rx_rate = 40;
             break;
         }
@@ -208,10 +211,10 @@ void *rx_ctrl_handler(void *arg)
   }
 
   /* set default rx phase increment */
-  *rx_freq = (uint32_t)floor(600000/100.0e6*(1<<30)+0.5);
+  *rx_freq = (uint32_t)floor(600000/122.88e6*(1<<30)+0.5);
   *rx_sync = 0;
   /* set default rx sample rate */
-  *rx_rate = 500;
+  *rx_rate = 640;
 
   close(sock_client);
   sock_thread[0] = -1;
@@ -253,10 +256,10 @@ void *tx_ctrl_handler(void *arg)
   uint32_t command, freq;
 
   /* set default tx phase increment */
-  *tx_freq = (uint32_t)floor(600000/100.0e6*(1<<30)+0.5);
+  *tx_freq = (uint32_t)floor(600000/122.88e6*(1<<30)+0.5);
   *tx_sync = 0;
   /* set default tx sample rate */
-  *tx_rate = 500;
+  *tx_rate = 640;
 
   while(1)
   {
@@ -267,7 +270,7 @@ void *tx_ctrl_handler(void *arg)
         /* set tx phase increment */
         freq = command & 0xfffffff;
         if(freq < freq_min || freq > freq_max) continue;
-        *tx_freq = (uint32_t)floor(freq/100.0e6*(1<<30)+0.5);
+        *tx_freq = (uint32_t)floor(freq/122.88e6*(1<<30)+0.5);
         *tx_sync = freq > 0 ? 0 : 1;
         break;
       case 1:
@@ -275,21 +278,24 @@ void *tx_ctrl_handler(void *arg)
         switch(command & 7)
         {
           case 0:
-            *tx_rate = 2500;
+            *tx_rate = 2560;
             break;
           case 1:
-            *tx_rate = 1000;
+            *tx_rate = 1280;
             break;
           case 2:
-            *tx_rate = 500;
+            *tx_rate = 640;
             break;
           case 3:
-            *tx_rate = 200;
+            *tx_rate = 320;
             break;
           case 4:
-            *tx_rate = 100;
+            *tx_rate = 160;
             break;
           case 5:
+            *tx_rate = 80;
+            break;
+          case 6:
             *tx_rate = 40;
             break;
         }
@@ -298,10 +304,10 @@ void *tx_ctrl_handler(void *arg)
   }
 
   /* set default tx phase increment */
-  *tx_freq = (uint32_t)floor(600000/100.0e6*(1<<30)+0.5);
+  *tx_freq = (uint32_t)floor(600000/122.88e6*(1<<30)+0.5);
   *tx_sync = 0;
   /* set default tx sample rate */
-  *tx_rate = 500;
+  *tx_rate = 640;
 
   close(sock_client);
   sock_thread[2] = -1;

@@ -62,29 +62,28 @@ set_property PACKAGE_PIN P22 [get_ports {adc_data_i[13]}]
 set_property IOSTANDARD LVCMOS18 [get_ports adc_dco_i]
 set_property PACKAGE_PIN M19 [get_ports adc_dco_i]
 
-set_property IOSTANDARD DIFF_HSTL_I_18 [get_ports adc_clk_p_o]
-set_property IOSTANDARD DIFF_HSTL_I_18 [get_ports adc_clk_n_o]
-set_property PACKAGE_PIN N19 [get_ports adc_clk_p_o]
-set_property PACKAGE_PIN N20 [get_ports adc_clk_n_o]
-
 set_property IOSTANDARD LVCMOS18 [get_ports {adc_spi_o[*]}]
 
 set_property PACKAGE_PIN R18 [get_ports {adc_spi_o[0]}]
 set_property PACKAGE_PIN T18 [get_ports {adc_spi_o[1]}]
 set_property PACKAGE_PIN M21 [get_ports {adc_spi_o[2]}]
 
-set_property IOSTANDARD LVCMOS18 [get_ports {adc_cfg_o[*]}]
+### GPIO
 
-set_property PACKAGE_PIN T16 [get_ports {adc_cfg_o[0]}]
-set_property PACKAGE_PIN T17 [get_ports {adc_cfg_o[1]}]
-set_property PACKAGE_PIN R19 [get_ports {adc_cfg_o[2]}]
-set_property PACKAGE_PIN T19 [get_ports {adc_cfg_o[3]}]
-set_property PACKAGE_PIN N15 [get_ports {adc_cfg_o[4]}]
-set_property PACKAGE_PIN P15 [get_ports {adc_cfg_o[5]}]
-set_property PACKAGE_PIN P17 [get_ports {adc_cfg_o[6]}]
-set_property PACKAGE_PIN P18 [get_ports {adc_cfg_o[7]}]
-set_property PACKAGE_PIN J20 [get_ports {adc_cfg_o[8]}]
-set_property PACKAGE_PIN K21 [get_ports {adc_cfg_o[9]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {GPIO_0_tri_io[*]}]
+
+set_property PACKAGE_PIN T16 [get_ports {GPIO_0_tri_io[0]}]
+set_property PACKAGE_PIN T19 [get_ports {GPIO_0_tri_io[1]}]
+set_property PACKAGE_PIN P17 [get_ports {GPIO_0_tri_io[2]}]
+set_property PACKAGE_PIN P18 [get_ports {GPIO_0_tri_io[3]}]
+set_property PACKAGE_PIN N15 [get_ports {GPIO_0_tri_io[4]}]
+
+### IIC
+
+set_property IOSTANDARD LVCMOS18 [get_ports IIC_0_0_*_io]
+
+set_property PACKAGE_PIN T17 [get_ports IIC_0_0_scl_io]
+set_property PACKAGE_PIN R19 [get_ports IIC_0_0_sda_io]
 
 ### DAC
 

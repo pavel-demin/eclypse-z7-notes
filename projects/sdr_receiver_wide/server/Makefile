@@ -12,4 +12,4 @@ gen: gen.c
 	gcc $(CFLAGS) -o $@ $^ -lm
 
 clean:
-	rm -f sdr-receiver-wide gen
+	rm -f sdr-receiver-wide setup gen

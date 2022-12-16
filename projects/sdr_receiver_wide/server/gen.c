@@ -21,14 +21,14 @@ int main(int argc, char *argv[])
     number[i] = (argc == 4) ? strtol(argv[i + 1], &end, 10) : -1;
     if(errno != 0 || end == argv[i + 1])
     {
-      printf("Usage: gen [1-2] [0-32766] [0-50000000]\n");
+      fprintf(stderr, "Usage: gen [1-2] [0-32766] [0-61440000]\n");
       return EXIT_FAILURE;
     }
   }
 
-  if(number[0] < 1 || number[0] > 2 || number[1] < 0 || number[1] > 32766 || number[2] < 0 || number[2] > 50000000)
+  if(number[0] < 1 || number[0] > 2 || number[1] < 0 || number[1] > 32766 || number[2] < 0 || number[2] > 61440000)
   {
-    fprintf(stderr, "Usage: gen [1-2] [0-32766] [0-50000000]\n");
+    fprintf(stderr, "Usage: gen [1-2] [0-32766] [0-61440000]\n");
     return EXIT_FAILURE;
   }
 
@@ -43,12 +43,12 @@ int main(int argc, char *argv[])
   switch(number[0])
   {
     case 1:
-      *(uint32_t *)(cfg + 20) = (uint32_t)floor(number[2] / 100.0e6 * (1<<30) + 0.5);
-      *(uint16_t *)(cfg + 28) = (uint16_t)number[1];
+      *(uint32_t *)(cfg + 16) = (uint32_t)floor(number[2] / 122.88e6 * (1<<30) + 0.5);
+      *(uint16_t *)(cfg + 24) = (uint16_t)number[1];
       break;
     case 2:
-      *(uint32_t *)(cfg + 24) = (uint32_t)floor(number[2] / 100.0e6 * (1<<30) + 0.5);
-      *(uint16_t *)(cfg + 30) = (uint16_t)number[1];
+      *(uint32_t *)(cfg + 20) = (uint32_t)floor(number[2] / 122.88e6 * (1<<30) + 0.5);
+      *(uint16_t *)(cfg + 26) = (uint16_t)number[1];
       break;
   }
 

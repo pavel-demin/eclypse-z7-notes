@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 {
   int fd, i2c_fd;
   volatile void *gpio;
-  volatile uint32_t *gpio_dat, *gpio_tri, *spi;
+  volatile uint32_t *gpio_dat, *gpio_tri, *adc_spi;
 
   if((fd = open("/dev/mem", O_RDWR)) < 0)
   {
@@ -57,18 +57,18 @@ int main(int argc, char *argv[])
         i2c_write(i2c_fd, 0x004C, 0x0188);
         i2c_write(i2c_fd, 0x004B, 0x8008);
         i2c_write(i2c_fd, 0x0049, 0x1000);
-        i2c_write(i2c_fd, 0x0048, 0x0006); // /6
+        i2c_write(i2c_fd, 0x0048, 0x0005); // /5
         i2c_write(i2c_fd, 0x0044, 0x1000);
         i2c_write(i2c_fd, 0x003F, 0x1000);
         i2c_write(i2c_fd, 0x0039, 0x1000);
         i2c_write(i2c_fd, 0x0032, 0x07C0);
         i2c_write(i2c_fd, 0x0031, 0x001F);
-        i2c_write(i2c_fd, 0x0030, 0x300A);
+        i2c_write(i2c_fd, 0x0030, 0x180A);
         i2c_write(i2c_fd, 0x002F, 0x0500); // /4
-        i2c_write(i2c_fd, 0x001E, 0x007D);
+        i2c_write(i2c_fd, 0x001E, 0x0040);
         i2c_write(i2c_fd, 0x001B, 0x0004);
-        i2c_write(i2c_fd, 0x0019, 0x0402);
-        i2c_write(i2c_fd, 0x0018, 0x9524);
+        i2c_write(i2c_fd, 0x0019, 0x0401);
+        i2c_write(i2c_fd, 0x0018, 0x8718);
         i2c_write(i2c_fd, 0x0005, 0x0000);
         i2c_write(i2c_fd, 0x0004, 0x0070);
         i2c_write(i2c_fd, 0x0002, 0x0002);
@@ -79,10 +79,14 @@ int main(int argc, char *argv[])
 
   usleep(10000);
 
-  spi = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40002000);
+  adc_spi = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40002000);
 
-  *spi = 0x555555;
-  *spi = 0xAAAAAA;
+  *adc_spi = 0x000803;
+  *adc_spi = 0x000800;
+  *adc_spi = 0x000502;
+  *adc_spi = 0x001421;
+  *adc_spi = 0x000501;
+  *adc_spi = 0x001431;
 
   return EXIT_SUCCESS;
 }

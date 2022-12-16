@@ -21,7 +21,7 @@ volatile uint8_t *rx_rst;
 volatile uint64_t *rx_data[8];
 
 const uint32_t freq_min = 0;
-const uint32_t freq_max = 50000000;
+const uint32_t freq_max = 61440000;
 
 int receivers = 1;
 
@@ -40,8 +40,6 @@ int main(int argc, char *argv[])
   ssize_t size;
   pthread_t thread;
   volatile void *cfg, *sts;
-  volatile uint32_t *spi;
-  volatile uint16_t *adc_cfg;
   volatile uint8_t *rx_sel;
   char *end;
   uint8_t buffer[1032];
@@ -74,40 +72,25 @@ int main(int argc, char *argv[])
 
   sts = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40000000);
   cfg = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40001000);
-  spi = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40002000);
 
   for(i = 0; i < 8; ++i)
   {
-    rx_data[i] = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40003000 + i * 0x1000);
+    rx_data[i] = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40010000 + i * 0x2000);
     rx_freq[i] = ((uint32_t *)(cfg + 8 + i * 4));
     rx_cntr[i] = ((uint16_t *)(sts + 0 + i * 2));
 
     /* set default rx phase increment */
-    *rx_freq[i] = (uint32_t)floor(600000 / 100.0e6 * (1 << 30) + 0.5);
+    *rx_freq[i] = (uint32_t)floor(600000 / 122.88e6 * (1 << 30) + 0.5);
   }
 
   rx_rst = ((uint8_t *)(cfg + 0));
-
-  adc_cfg = ((uint16_t *)(cfg + 2));
 
   rx_rate = ((uint16_t *)(cfg + 4));
 
   rx_sel = ((uint8_t *)(cfg + 6));
 
-  *adc_cfg = 0;
-  *adc_cfg = 0x255;
-  usleep(20000);
-  *adc_cfg = 0;
-
-  *spi = 0x000803;
-  *spi = 0x000800;
-  *spi = 0x000502;
-  *spi = 0x001421;
-  *spi = 0x000501;
-  *spi = 0x001431;
-
   /* set default rx sample rate */
-  *rx_rate = 1000;
+  *rx_rate = 1280;
 
   *rx_sel = chan;
 
@@ -202,13 +185,16 @@ void process_ep2(uint8_t *frame)
       switch(frame[1] & 3)
       {
         case 0:
-          *rx_rate = 1000;
+          *rx_rate = 1280;
           break;
         case 1:
-          *rx_rate = 500;
+          *rx_rate = 640;
           break;
         case 2:
-          *rx_rate = 250;
+          *rx_rate = 320;
+          break;
+        case 3:
+          *rx_rate = 160;
           break;
       }
       break;
@@ -217,56 +203,56 @@ void process_ep2(uint8_t *frame)
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[0] = (uint32_t)floor(freq / 100.0e6 * (1 << 30) + 0.5);
+      *rx_freq[0] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 6:
     case 7:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[1] = (uint32_t)floor(freq / 100.0e6 * (1 << 30) + 0.5);
+      *rx_freq[1] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 8:
     case 9:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[2] = (uint32_t)floor(freq / 100.0e6 * (1 << 30) + 0.5);
+      *rx_freq[2] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 10:
     case 11:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[3] = (uint32_t)floor(freq / 100.0e6 * (1 << 30) + 0.5);
+      *rx_freq[3] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 12:
     case 13:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[4] = (uint32_t)floor(freq / 100.0e6 * (1 << 30) + 0.5);
+      *rx_freq[4] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 14:
     case 15:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[5] = (uint32_t)floor(freq / 100.0e6 * (1 << 30) + 0.5);
+      *rx_freq[5] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 16:
     case 17:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[6] = (uint32_t)floor(freq / 100.0e6 * (1 << 30) + 0.5);
+      *rx_freq[6] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 36:
     case 37:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[7] = (uint32_t)floor(freq / 100.0e6 * (1 << 30) + 0.5);
+      *rx_freq[7] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
   }
 }
@@ -276,18 +262,18 @@ void *handler_ep6(void *arg)
   int i, j, n, m, size;
   int data_offset, header_offset;
   uint32_t counter;
-  uint8_t data0[2048];
-  uint8_t data1[2048];
-  uint8_t data2[2048];
-  uint8_t data3[2048];
-  uint8_t data4[2048];
-  uint8_t data5[2048];
-  uint8_t data6[2048];
-  uint8_t data7[2048];
-  uint8_t buffer[12 * 1032];
+  uint8_t data0[4096];
+  uint8_t data1[4096];
+  uint8_t data2[4096];
+  uint8_t data3[4096];
+  uint8_t data4[4096];
+  uint8_t data5[4096];
+  uint8_t data6[4096];
+  uint8_t data7[4096];
+  uint8_t buffer[25 * 1032];
   uint8_t *pointer;
-  struct iovec iovec[12][1];
-  struct mmsghdr datagram[12];
+  struct iovec iovec[25][1];
+  struct mmsghdr datagram[25];
   uint8_t header[40] =
   {
     127, 127, 127, 0, 0, 33, 17, 25,
@@ -300,7 +286,7 @@ void *handler_ep6(void *arg)
   memset(iovec, 0, sizeof(iovec));
   memset(datagram, 0, sizeof(datagram));
 
-  for(i = 0; i < 12; ++i)
+  for(i = 0; i < 25; ++i)
   {
     *(uint32_t *)(buffer + i * 1032 + 0) = 0x0601feef;
     iovec[i][0].iov_base = buffer + i * 1032;
@@ -323,9 +309,9 @@ void *handler_ep6(void *arg)
 
     size = receivers * 6 + 2;
     n = 504 / size;
-    m = 128 / n;
+    m = 256 / n;
 
-    if(*rx_cntr[0] >= 1024)
+    if(*rx_cntr[0] >= 2048)
     {
       *rx_rst |= 1;
       *rx_rst &= ~1;

@@ -76,9 +76,9 @@ int main ()
   ram = mmap(NULL, 128*sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
 
   rx_rst = (uint8_t *)(cfg + 0);
+  rx_rate = (uint16_t *)(cfg + 2);
   rx_addr = (uint32_t *)(cfg + 4);
-  rx_rate = (uint16_t *)(cfg + 8);
-  rx_freq = (uint32_t *)(cfg + 12);
+  rx_freq = (uint32_t *)(cfg + 8);
 
   rx_cntr = (uint32_t *)(sts + 0);
 
@@ -113,10 +113,10 @@ int main ()
     usleep(100);
     *rx_rst &= ~2;
     /* set default sample rate */
-    *rx_rate = 8;
+    *rx_rate = 6;
     /* set default phase increments */
-    rx_freq[0] = (uint32_t)floor(10000000 / 100.0e6 * (1<<30) + 0.5);
-    rx_freq[1] = (uint32_t)floor(10000000 / 100.0e6 * (1<<30) + 0.5);
+    rx_freq[0] = (uint32_t)floor(10000000 / 122.88e6 * (1<<30) + 0.5);
+    rx_freq[1] = (uint32_t)floor(10000000 / 122.88e6 * (1<<30) + 0.5);
 
     if((sock_client = accept(sock_server, NULL, NULL)) < 0)
     {
@@ -127,7 +127,9 @@ int main ()
     signal(SIGINT, signal_handler);
 
     /* enter normal operating mode */
-    *rx_rst |= 3;
+    *rx_rst |= 2;
+    usleep(100);
+    *rx_rst |= 1;
 
     limit = 32*1024;
 
@@ -143,17 +145,18 @@ int main ()
         {
           case 0:
             /* set sample rate */
-            if(value < 5 || value > 64) continue;
+            if(value < 6 || value > 64) continue;
             *rx_rate = value;
+            break;
           case 1:
             /* set first phase increment */
-            if(value < 0 || value > 50000000) continue;
-            rx_freq[0] = (uint32_t)floor(value / 100.0e6 * (1<<30) + 0.5);
+            if(value < 0 || value > 61440000) continue;
+            rx_freq[0] = (uint32_t)floor(value / 122.88e6 * (1<<30) + 0.5);
             break;
           case 2:
             /* set second phase increment */
-            if(value < 0 || value > 50000000) continue;
-            rx_freq[1] = (uint32_t)floor(value / 100.0e6 * (1<<30) + 0.5);
+            if(value < 0 || value > 61440000) continue;
+            rx_freq[1] = (uint32_t)floor(value / 122.88e6 * (1<<30) + 0.5);
             break;
         }
       }

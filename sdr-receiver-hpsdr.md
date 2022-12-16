@@ -15,7 +15,7 @@ The HPSDR/Metis communication protocol is described in the following documents:
 
  - [HPSDR - USB Data Protocol](https://github.com/TAPR/OpenHPSDR-SVN/raw/master/Documentation/USB_protocol_V1.58.doc)
 
-This application requires that the Zmod ADC is connected to the ZMOD A connector of the Eclypse Z7 board.
+This application requires that the Zmod Digitizer is connected to the ZMOD A connector of the Eclypse Z7 board.
 
 Hardware
 -----
@@ -24,17 +24,13 @@ The FPGA configuration consists of eight identical digital down-converters (DDC)
 
 ![HPSDR receiver]({{ "/img/sdr-receiver-hpsdr.png" | prepend: site.baseurl }})
 
-The main problem in emulating the HPSDR hardware with Eclypse Z7 is that the Zmod ADC sample rate is 100 MSPS and the HPSDR ADC sample rate is 122.88 MSPS.
+The I/Q data rate is configurable and four settings are available: 48, 96, 192, 384 kSPS.
 
-To address this problem, this version contains a FIR filter for fractional sample rate conversion.
-
-The resulting I/Q data rate is configurable and three settings are available: 48, 96, 192 kSPS.
-
-The tunable frequency range covers from 0 Hz to 50 MHz.
+The tunable frequency range covers from 0 Hz to 61.44 MHz.
 
 The [projects/sdr_receiver_hpsdr](https://github.com/pavel-demin/eclypse-z7-notes/tree/master/projects/sdr_receiver_hpsdr) directory contains two Tcl files: [block_design.tcl](https://github.com/pavel-demin/eclypse-z7-notes/blob/master/projects/sdr_receiver_hpsdr/block_design.tcl), [rx.tcl](https://github.com/pavel-demin/eclypse-z7-notes/blob/master/projects/sdr_receiver_hpsdr/rx.tcl). The code in these files instantiates, configures and interconnects all the needed IP cores.
 
-The [projects/sdr_receiver_hpsdr/filters](https://github.com/pavel-demin/eclypse-z7-notes/tree/master/projects/sdr_receiver_hpsdr/filters) directory contains the source code of the [R](https://www.r-project.org) scripts used to calculate the coefficients of the FIR filters.
+The [projects/sdr_receiver_hpsdr/filters](https://github.com/pavel-demin/eclypse-z7-notes/tree/master/projects/sdr_receiver_hpsdr/filters) directory contains the source code of the [R](https://www.r-project.org) script used to calculate the coefficients of the FIR filters.
 
 The [projects/sdr_receiver_hpsdr/server](https://github.com/pavel-demin/eclypse-z7-notes/tree/master/projects/sdr_receiver_hpsdr/server) directory contains the source code of the UDP server ([sdr-receiver-hpsdr.c](https://github.com/pavel-demin/eclypse-z7-notes/blob/master/projects/sdr_receiver_hpsdr/server/sdr-receiver-hpsdr.c)) that receives control commands and transmits the I/Q data streams to the SDR programs.
 

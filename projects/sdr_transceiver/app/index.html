@@ -23,22 +23,27 @@
 <p>More details about this application can be found at <a href="https://pavel-demin.github.io/eclypse-z7-notes/sdr-transceiver/" target="_blank">this link</a>.</p>
 <h2>Getting started with SDR# and HDSDR</h2>
 <ul>
-<li>Connect an antenna to the CH1 connector of the Zmod ADC module.</li>
+<li>Connect an antenna to the CH1 connector of the Zmod Digitizer module.</li>
 <li>Download and install <a href="https://www.dropbox.com/sh/5fy49wae6xwxa8a/AAAdAcU238cppWziK4xPRIADa/sdr/sdrsharp_v1.0.0.1361_with_plugins.zip?dl=1">SDR#</a> or <a href="http://www.hdsdr.de/" target="_blank">HDSDR</a>.</li>
 <li>Download and install <a href="https://visualstudio.microsoft.com/downloads/#microsoft-visual-c-redistributable-for-visual-studio-2019" target="_blank">Microsoft Visual C++ Redistributable for Visual Studio 2019</a>.</li>
-<li>Download <a href="https://www.dropbox.com/sh/5fy49wae6xwxa8a/AAABy8xWrv4wFFbkYfmVU6DGa/sdr/ExtIO_RedPitaya_TRX.dll?dl=1">pre-built ExtIO plug-in</a> for SDR# and HDSDR.</li>
-<li>Copy ExtIO_RedPitaya_TRX.dll into the SDR# or HDSDR installation directory.</li>
+<li>Download <a href="https://www.dropbox.com/sh/5fy49wae6xwxa8a/AAA6mFLQaCF-wT2fhACJHotra/sdr/ExtIO_RedPitaya_122_88.dll?dl=1">pre-built ExtIO plug-in</a> for SDR# and HDSDR.</li>
+<li>Copy ExtIO_RedPitaya_122_88.dll into the SDR# or HDSDR installation directory.</li>
 <li>Start SDR# or HDSDR.</li>
-<li>Select Red Pitaya SDR TRX from the Source list in SDR# or from the Options [F7] → Select Input menu in HDSDR.</li>
+<li>Select Red Pitaya SDR 122.88 from the Source list in SDR# or from the Options [F7] → Select Input menu in HDSDR.</li>
 <li>Press Configure icon in SDR# or press ExtIO button in HDSDR, then type in the IP address of the Eclypse Z7 board and close the configuration window.</li>
 <li>Press Play icon in SDR# or press Start [F2] button in HDSDR.</li>
 </ul>
 <h2>Getting started with GNU Radio</h2>
 <ul>
-<li>Connect an antenna to the CH1 connector of the Zmod ADC module.</li>
-<li>Install <a href="https://gnuradio.org" target="_blank">GNU Radio</a>.</li>
-<li>Download <a href="https://github.com/pavel-demin/eclypse-z7-notes/raw/master/projects/sdr_transceiver/gnuradio/trx_dual_template.grc" target="_blank">flow graph example</a>.</li>
-<li>Run <a href="https://wiki.gnuradio.org/index.php/GNURadioCompanion" target="_blank">GNU Radio Companion</a> and open flow graph example.</li>
+<li>Connect an antenna to the CH1 connector of the Zmod Digitizer module.</li>
+<li>Install <a href="http://gnuradio.org" target="_blank">GNU Radio</a>:</li>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">sudo apt-get install gnuradio</code></pre></div>
+<li>Clone the SDR transceiver source code repository:</li>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">git clone https://github.com/pavel-demin/eclypse-z7-notes</code></pre></div>
+<li>Run <a href="https://wiki.gnuradio.org/index.php/GNURadioCompanion" target="_blank">GNU Radio Companion</a> and open FM receiver flow graph:</li>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">cd eclypse-z7-notes/projects/sdr_transceiver/gnuradio
+export GRC_BLOCKS_PATH=.
+gnuradio-companion fm.grc</code></pre></div>
 </ul>
 </div>
 </body>

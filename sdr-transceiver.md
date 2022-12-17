@@ -88,7 +88,7 @@ Getting started with SDR# and HDSDR
  - Download [ExtIO plug-in](https://www.dropbox.com/sh/5fy49wae6xwxa8a/AAA6mFLQaCF-wT2fhACJHotra/sdr/ExtIO_RedPitaya_122_88.dll?dl=1) for SDR# and HDSDR.
  - Copy `ExtIO_RedPitaya_122_88.dll` into the SDR# or HDSDR installation directory.
  - Start SDR# or HDSDR.
- - Select Red Pitaya SDR TRX from the Source list in SDR# or from the Options [F7] &rarr; Select Input menu in HDSDR.
+ - Select Red Pitaya SDR 122.88 from the Source list in SDR# or from the Options [F7] &rarr; Select Input menu in HDSDR.
  - Press Configure icon in SDR# or press ExtIO button in HDSDR, then type in the IP address of the Eclypse Z7 board and close the configuration window.
  - Press Play icon in SDR# or press Start [F2] button in HDSDR.
 

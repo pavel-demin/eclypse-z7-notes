@@ -75,6 +75,23 @@ export GRC_BLOCKS_PATH=.
 gnuradio-companion fm.grc
 {% endhighlight %}
 
+Getting started with SDR# and HDSDR
+-----
+
+ - Connect an antenna to the CH1 connector of the Zmod Digitizer module.
+ - Download [SD card image zip file]({{ site.release-image }}) (more details about the SD card image can be found at [this link]({{ "/alpine/" | prepend: site.baseurl }})).
+ - Copy the contents of the SD card image zip file to a micro SD card.
+ - Optionally, to start the application automatically at boot time, copy its `start.sh` file from `apps/sdr_transceiver` to the topmost directory on the SD card.
+ - Install the micro SD card in the Eclypse Z7 board and connect the power.
+ - Download and install [SDR#](https://www.dropbox.com/sh/5fy49wae6xwxa8a/AAAdAcU238cppWziK4xPRIADa/sdr/sdrsharp_v1.0.0.1361_with_plugins.zip?dl=1) or [HDSDR](http://www.hdsdr.de/).
+ - Download and install [Microsoft Visual C++ Redistributable for Visual Studio 2019](https://visualstudio.microsoft.com/downloads/#microsoft-visual-c-redistributable-for-visual-studio-2019).
+ - Download [ExtIO plug-in](https://www.dropbox.com/sh/5fy49wae6xwxa8a/AAA6mFLQaCF-wT2fhACJHotra/sdr/ExtIO_RedPitaya_122_88.dll?dl=1) for SDR# and HDSDR.
+ - Copy `ExtIO_RedPitaya_122_88.dll` into the SDR# or HDSDR installation directory.
+ - Start SDR# or HDSDR.
+ - Select Red Pitaya SDR TRX from the Source list in SDR# or from the Options [F7] &rarr; Select Input menu in HDSDR.
+ - Press Configure icon in SDR# or press ExtIO button in HDSDR, then type in the IP address of the Eclypse Z7 board and close the configuration window.
+ - Press Play icon in SDR# or press Start [F2] button in HDSDR.
+
 Building from source
 -----
 

@@ -25,24 +25,13 @@ ssize_t i2c_write(int fd, uint16_t addr, uint16_t data)
 int main(int argc, char *argv[])
 {
   int fd, i2c_fd;
-  volatile void *gpio;
-  volatile uint32_t *gpio_dat, *gpio_tri, *spi;
+  volatile uint32_t *spi;
 
   if((fd = open("/dev/mem", O_RDWR)) < 0)
   {
     perror("open");
     return EXIT_FAILURE;
   }
-
-  gpio = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x80000000);
-
-  gpio_dat = gpio + 0;
-  gpio_tri = gpio + 4;
-
-  *gpio_tri = 25;
-
-  *gpio_dat &= ~6;
-  *gpio_dat |= 6;
 
   usleep(10000);
 

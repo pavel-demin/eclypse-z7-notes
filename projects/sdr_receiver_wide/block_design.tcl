@@ -16,23 +16,20 @@ cell xilinx.com:ip:clk_wiz pll_0 {
 # Create processing_system7
 cell xilinx.com:ip:processing_system7 ps_0 {
   PCW_IMPORT_BOARD_PRESET cfg/eclypse_z7.xml
-  PCW_USE_M_AXI_GP1 1
   PCW_USE_S_AXI_ACP 1
   PCW_USE_DEFAULT_ACP_USER_VAL 1
 } {
   M_AXI_GP0_ACLK pll_0/clk_out1
-  M_AXI_GP1_ACLK ps_0/FCLK_CLK0
   S_AXI_ACP_ACLK pll_0/clk_out1
 }
 
 make_bd_intf_pins_external [get_bd_intf_pins ps_0/IIC_0]
 
-# Create axi_gpio
-cell xilinx.com:ip:axi_gpio gpio_0 {
-  C_GPIO_WIDTH 5
+# Create cdce_gpio
+cell pavel-demin:user:cdce_gpio gpio_0 {} {
+  gpio cdce_tri_io
+  aclk ps_0/FCLK_CLK0
 }
-
-make_bd_intf_pins_external [get_bd_intf_pins gpio_0/GPIO]
 
 # Create all required interconnections
 apply_bd_automation -rule xilinx.com:bd_rule:processing_system7 -config {
@@ -418,7 +415,5 @@ addr 0x40001000 4K cfg_0/S_AXI /ps_0/M_AXI_GP0
 addr 0x40002000 4K writer_0/S_AXI /ps_0/M_AXI_GP0
 
 addr 0x40003000 4K writer_1/S_AXI /ps_0/M_AXI_GP0
-
-addr 0x80000000 4K gpio_0/S_AXI /ps_0/M_AXI_GP1
 
 assign_bd_address [get_bd_addr_segs ps_0/S_AXI_ACP/ACP_DDR_LOWOCM]

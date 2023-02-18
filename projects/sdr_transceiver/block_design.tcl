@@ -16,20 +16,17 @@ cell xilinx.com:ip:clk_wiz pll_0 {
 # Create processing_system7
 cell xilinx.com:ip:processing_system7 ps_0 {
   PCW_IMPORT_BOARD_PRESET cfg/eclypse_z7.xml
-  PCW_USE_M_AXI_GP1 1
 } {
   M_AXI_GP0_ACLK pll_0/clk_out1
-  M_AXI_GP1_ACLK ps_0/FCLK_CLK0
 }
 
 make_bd_intf_pins_external [get_bd_intf_pins ps_0/IIC_0]
 
-# Create axi_gpio
-cell xilinx.com:ip:axi_gpio gpio_0 {
-  C_GPIO_WIDTH 5
+# Create cdce_gpio
+cell pavel-demin:user:cdce_gpio gpio_0 {} {
+  gpio cdce_tri_io
+  aclk ps_0/FCLK_CLK0
 }
-
-make_bd_intf_pins_external [get_bd_intf_pins gpio_0/GPIO]
 
 # Create all required interconnections
 apply_bd_automation -rule xilinx.com:bd_rule:processing_system7 -config {
@@ -210,5 +207,3 @@ addr 0x40006000 4K trx_1/sts_0/S_AXI /ps_0/M_AXI_GP0
 addr 0x40020000 32K trx_1/rx_0/reader_0/S_AXI /ps_0/M_AXI_GP0
 
 addr 0x40028000 32K trx_1/tx_0/writer_0/S_AXI /ps_0/M_AXI_GP0
-
-addr 0x80000000 4K gpio_0/S_AXI /ps_0/M_AXI_GP1

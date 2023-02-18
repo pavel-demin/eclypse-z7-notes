@@ -70,6 +70,7 @@ int main(int argc, char *argv[])
 
   adc_spi = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40000000);
 
+  *adc_spi = 0x00003C;
   *adc_spi = 0x000803;
   *adc_spi = 0x000800;
   *adc_spi = 0x000502;

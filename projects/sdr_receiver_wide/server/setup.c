@@ -76,6 +76,7 @@ int main(int argc, char *argv[])
 
   dac_cfg = cfg + 1;
 
+  *adc_spi = 0x00003C;
   *adc_spi = 0x000803;
   *adc_spi = 0x000800;
   *adc_spi = 0x000502;

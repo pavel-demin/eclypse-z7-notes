@@ -160,7 +160,7 @@ lbu commit -d
 
 apk add patch make gcc gfortran linux-headers
 
-for project in server sdr_receiver_hpsdr sdr_receiver_wide sdr_transceiver
+for project in led_blinker server sdr_receiver_hpsdr sdr_receiver_wide sdr_transceiver
 do
   make -C /media/mmcblk0p1/apps/\$project clean
   make -C /media/mmcblk0p1/apps/\$project

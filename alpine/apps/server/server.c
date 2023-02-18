@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <fcntl.h>
-#include <sys/mman.h>
 #include <sys/stat.h>
 
 const char *directory = "/media/mmcblk0p1/apps";
@@ -30,7 +28,6 @@ int main()
   size_t size;
   char buffer[256];
   char path[284];
-  volatile int *slcr;
 
   if(fgets(buffer, 256, stdin) == NULL)
   {

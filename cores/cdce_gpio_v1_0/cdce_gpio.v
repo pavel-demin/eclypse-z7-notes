@@ -3,9 +3,9 @@
 
 module cdce_gpio
 (
-  input  wire       aclk,
+  input wire       aclk,
 
-  inout  wire [4:0] gpio
+  inout wire [4:0] gpio
 );
 
   reg [7:0] int_cntr_reg = 8'd0;
@@ -16,7 +16,7 @@ module cdce_gpio
   begin
     if(~int_and_wire)
     begin
-      int_cntr_reg = int_cntr_reg + 1'b1;
+      int_cntr_reg <= int_cntr_reg + 1'b1;
     end
   end
 

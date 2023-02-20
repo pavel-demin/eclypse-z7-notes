@@ -16,8 +16,10 @@ cell xilinx.com:ip:clk_wiz pll_0 {
 # Create processing_system7
 cell xilinx.com:ip:processing_system7 ps_0 {
   PCW_IMPORT_BOARD_PRESET cfg/eclypse_z7.xml
+  PCW_USE_M_AXI_GP1 1
 } {
   M_AXI_GP0_ACLK pll_0/clk_out1
+  M_AXI_GP1_ACLK pll_0/clk_out1
 }
 
 make_bd_intf_pins_external [get_bd_intf_pins ps_0/IIC_0]
@@ -25,6 +27,12 @@ make_bd_intf_pins_external [get_bd_intf_pins ps_0/IIC_0]
 # Create cdce_gpio
 cell pavel-demin:user:cdce_gpio gpio_0 {} {
   gpio cdce_tri_io
+  aclk ps_0/FCLK_CLK0
+}
+
+# Create dac_gpio
+cell pavel-demin:user:dac_gpio gpio_1 {} {
+  gpio dac_tri_io
   aclk ps_0/FCLK_CLK0
 }
 
@@ -41,55 +49,8 @@ cell xilinx.com:ip:xlconstant const_0
 # Create proc_sys_reset
 cell xilinx.com:ip:proc_sys_reset rst_0 {} {
   ext_reset_in const_0/dout
-}
-
-# CFG
-
-# Create axi_cfg_register
-cell pavel-demin:user:axi_cfg_register cfg_0 {
-  CFG_DATA_WIDTH 32
-  AXI_ADDR_WIDTH 32
-  AXI_DATA_WIDTH 32
-}
-
-# Create port_slicer
-cell pavel-demin:user:port_slicer slice_0 {
-  DIN_WIDTH 32 DIN_FROM 3 DIN_TO 0
-} {
-  din cfg_0/cfg_data
-  dout dac_cfg_o
-}
-
-# ADC SPI
-
-# Create axi_axis_writer
-cell pavel-demin:user:axi_axis_writer writer_0 {
-  AXI_DATA_WIDTH 32
-} {
-  aclk pll_0/clk_out1
-  aresetn rst_0/peripheral_aresetn
-}
-
-# Create axis_data_fifo
-cell xilinx.com:ip:axis_data_fifo fifo_0 {
-  TDATA_NUM_BYTES.VALUE_SRC USER
-  TDATA_NUM_BYTES 4
-  FIFO_DEPTH 1024
-  HAS_WR_DATA_COUNT true
-} {
-  S_AXIS writer_0/M_AXIS
-  s_axis_aclk pll_0/clk_out1
-  s_axis_aresetn rst_0/peripheral_aresetn
-}
-
-# Create axis_spi
-cell pavel-demin:user:axis_spi spi_0 {
-  SPI_DATA_WIDTH 24
-} {
-  S_AXIS fifo_0/M_AXIS
-  spi_data adc_spi_o
-  aclk pll_0/clk_out1
-  aresetn rst_0/peripheral_aresetn
+  dcm_locked pll_0/locked
+  slowest_sync_clk pll_0/clk_out1
 }
 
 # ADC
@@ -116,38 +77,6 @@ cell xilinx.com:ip:axis_broadcaster bcast_0 {
   aresetn rst_0/peripheral_aresetn
 }
 
-# DAC SPI
-
-# Create axi_axis_writer
-cell pavel-demin:user:axi_axis_writer writer_1 {
-  AXI_DATA_WIDTH 32
-} {
-  aclk pll_0/clk_out1
-  aresetn rst_0/peripheral_aresetn
-}
-
-# Create axis_data_fifo
-cell xilinx.com:ip:axis_data_fifo fifo_1 {
-  TDATA_NUM_BYTES.VALUE_SRC USER
-  TDATA_NUM_BYTES 4
-  FIFO_DEPTH 1024
-  HAS_WR_DATA_COUNT true
-} {
-  S_AXIS writer_1/M_AXIS
-  s_axis_aclk pll_0/clk_out1
-  s_axis_aresetn rst_0/peripheral_aresetn
-}
-
-# Create axis_spi
-cell pavel-demin:user:axis_spi spi_1 {
-  SPI_DATA_WIDTH 16
-} {
-  S_AXIS fifo_1/M_AXIS
-  spi_data dac_spi_o
-  aclk pll_0/clk_out1
-  aresetn rst_0/peripheral_aresetn
-}
-
 # DAC
 
 # Create axis_combiner
@@ -170,40 +99,66 @@ cell pavel-demin:user:axis_zmod_dac dac_0 {
   dac_data dac_data_o
 }
 
-addr 0x40000000 4K cfg_0/S_AXI /ps_0/M_AXI_GP0
-
-addr 0x40001000 4K writer_0/S_AXI /ps_0/M_AXI_GP0
-
-addr 0x40002000 4K writer_1/S_AXI /ps_0/M_AXI_GP0
-
 # TRX
 
 module trx_0 {
   source projects/sdr_transceiver/trx.tcl
 } {
+  hub_0/S_AXI ps_0/M_AXI_GP0
   rx_0/mult_0/S_AXIS_A bcast_0/M00_AXIS
   tx_0/mult_0/M_AXIS_DOUT comb_0/S00_AXIS
 }
 
-addr 0x40003000 4K trx_0/cfg_0/S_AXI /ps_0/M_AXI_GP0
-
-addr 0x40004000 4K trx_0/sts_0/S_AXI /ps_0/M_AXI_GP0
-
-addr 0x40010000 32K trx_0/rx_0/reader_0/S_AXI /ps_0/M_AXI_GP0
-
-addr 0x40018000 32K trx_0/tx_0/writer_0/S_AXI /ps_0/M_AXI_GP0
-
 module trx_1 {
   source projects/sdr_transceiver/trx.tcl
 } {
+  hub_0/S_AXI ps_0/M_AXI_GP1
   rx_0/mult_0/S_AXIS_A bcast_0/M01_AXIS
   tx_0/mult_0/M_AXIS_DOUT comb_0/S01_AXIS
 }
 
-addr 0x40005000 4K trx_1/cfg_0/S_AXI /ps_0/M_AXI_GP0
+# ADC SPI
 
-addr 0x40006000 4K trx_1/sts_0/S_AXI /ps_0/M_AXI_GP0
+# Create axis_fifo
+cell pavel-demin:user:axis_fifo fifo_0 {
+  S_AXIS_TDATA_WIDTH 32
+  M_AXIS_TDATA_WIDTH 32
+  WRITE_DEPTH 1024
+} {
+  S_AXIS trx_0/hub_0/M01_AXIS
+  aclk pll_0/clk_out1
+  aresetn rst_0/peripheral_aresetn
+}
 
-addr 0x40020000 32K trx_1/rx_0/reader_0/S_AXI /ps_0/M_AXI_GP0
+# Create axis_spi
+cell pavel-demin:user:axis_spi spi_0 {
+  SPI_DATA_WIDTH 24
+} {
+  S_AXIS fifo_0/M_AXIS
+  spi_data adc_spi_o
+  aclk pll_0/clk_out1
+  aresetn rst_0/peripheral_aresetn
+}
 
-addr 0x40028000 32K trx_1/tx_0/writer_0/S_AXI /ps_0/M_AXI_GP0
+# DAC SPI
+
+# Create axis_data_fifo
+cell pavel-demin:user:axis_fifo fifo_1 {
+  S_AXIS_TDATA_WIDTH 32
+  M_AXIS_TDATA_WIDTH 32
+  WRITE_DEPTH 1024
+} {
+  S_AXIS trx_0/hub_0/M02_AXIS
+  aclk pll_0/clk_out1
+  aresetn rst_0/peripheral_aresetn
+}
+
+# Create axis_spi
+cell pavel-demin:user:axis_spi spi_1 {
+  SPI_DATA_WIDTH 16
+} {
+  S_AXIS fifo_1/M_AXIS
+  spi_data dac_spi_o
+  aclk pll_0/clk_out1
+  aresetn rst_0/peripheral_aresetn
+}

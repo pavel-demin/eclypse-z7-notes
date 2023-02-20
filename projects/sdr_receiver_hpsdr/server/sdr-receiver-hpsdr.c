@@ -15,10 +15,10 @@
 #include <arpa/inet.h>
 #include <net/if.h>
 
-volatile uint32_t *rx_freq[8];
-volatile uint16_t *rx_rate, *rx_cntr[8];
+volatile uint32_t *rx_freq;
+volatile uint16_t *rx_rate, *rx_cntr;
 volatile uint8_t *rx_rst;
-volatile uint64_t *rx_data[8];
+volatile uint8_t *rx_data;
 
 const uint32_t freq_min = 0;
 const uint32_t freq_max = 61440000;
@@ -55,10 +55,10 @@ int main(int argc, char *argv[])
   for(i = 0; i < 8; ++i)
   {
     errno = 0;
-    number = (argc == 9) ? strtol(argv[i + 1], &end, 10) : -1;
-    if(errno != 0 || end == argv[i + 1] || number < 1 || number > 2)
+    number = (argc == 10) ? strtol(argv[i + 2], &end, 10) : -1;
+    if(errno != 0 || end == argv[i + 2] || number < 1 || number > 2)
     {
-      printf("Usage: sdr-receiver-hpsdr 1|2 1|2 1|2 1|2 1|2 1|2 1|2 1|2\n");
+      fprintf(stderr, "Usage: sdr-receiver-hpsdr interface 1|2 1|2 1|2 1|2 1|2 1|2 1|2 1|2\n");
       return EXIT_FAILURE;
     }
     chan |= (number - 1) << i;
@@ -70,24 +70,31 @@ int main(int argc, char *argv[])
     return EXIT_FAILURE;
   }
 
-  sts = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40000000);
-  cfg = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40001000);
-
-  for(i = 0; i < 8; ++i)
+  if(strcmp(argv[1], "eth0") == 0)
   {
-    rx_data[i] = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40010000 + i * 0x2000);
-    rx_freq[i] = ((uint32_t *)(cfg + 8 + i * 4));
-    rx_cntr[i] = ((uint16_t *)(sts + 0 + i * 2));
-
-    /* set default rx phase increment */
-    *rx_freq[i] = (uint32_t)floor(600000 / 122.88e6 * (1 << 30) + 0.5);
+    cfg = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40000000);
+    sts = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40100000);
+    rx_data = mmap(NULL, 32*sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40200000);
+  }
+  else
+  {
+    cfg = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x80000000);
+    sts = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x80100000);
+    rx_data = mmap(NULL, 32*sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x80200000);
   }
 
-  rx_rst = ((uint8_t *)(cfg + 0));
+  rx_rst = (uint8_t *)(cfg + 0);
+  rx_sel = (uint8_t *)(cfg + 1);
+  rx_rate = (uint16_t *)(cfg + 2);
+  rx_freq = (uint32_t *)(cfg + 4);
 
-  rx_rate = ((uint16_t *)(cfg + 4));
+  rx_cntr = (uint16_t *)(sts + 0);
 
-  rx_sel = ((uint8_t *)(cfg + 6));
+  /* set default rx phase increment */
+  for(i = 0; i < 8; ++i)
+  {
+    rx_freq[i] = (uint32_t)floor(600000 / 122.88e6 * (1 << 30) + 0.5);
+  }
 
   /* set default rx sample rate */
   *rx_rate = 1280;
@@ -101,11 +108,17 @@ int main(int argc, char *argv[])
   }
 
   memset(&hwaddr, 0, sizeof(hwaddr));
-  strncpy(hwaddr.ifr_name, "eth0", IFNAMSIZ - 1);
+  strncpy(hwaddr.ifr_name, argv[1], IFNAMSIZ - 1);
   ioctl(sock_ep2, SIOCGIFHWADDR, &hwaddr);
   for(i = 0; i < 6; ++i) reply[i + 3] = hwaddr.ifr_addr.sa_data[i];
 
   setsockopt(sock_ep2, SOL_SOCKET, SO_REUSEADDR, (void *)&yes , sizeof(yes));
+
+  if(setsockopt(sock_ep2, SOL_SOCKET, SO_BINDTODEVICE, argv[1], strlen(argv[1]) + 1) < 0)
+  {
+    perror("SO_BINDTODEVICE");
+    return EXIT_FAILURE;
+  }
 
   memset(&addr_ep2, 0, sizeof(addr_ep2));
   addr_ep2.sin_family = AF_INET;
@@ -203,56 +216,56 @@ void process_ep2(uint8_t *frame)
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[0] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
+      rx_freq[0] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 6:
     case 7:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[1] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
+      rx_freq[1] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 8:
     case 9:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[2] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
+      rx_freq[2] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 10:
     case 11:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[3] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
+      rx_freq[3] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 12:
     case 13:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[4] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
+      rx_freq[4] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 14:
     case 15:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[5] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
+      rx_freq[5] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 16:
     case 17:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[6] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
+      rx_freq[6] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
     case 36:
     case 37:
       /* set rx phase increment */
       freq = ntohl(*(uint32_t *)(frame + 1));
       if(freq < freq_min || freq > freq_max) break;
-      *rx_freq[7] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
+      rx_freq[7] = (uint32_t)floor(freq / 122.88e6 * (1 << 30) + 0.5);
       break;
   }
 }
@@ -262,14 +275,7 @@ void *handler_ep6(void *arg)
   int i, j, n, m, size;
   int data_offset, header_offset;
   uint32_t counter;
-  uint8_t data0[4096];
-  uint8_t data1[4096];
-  uint8_t data2[4096];
-  uint8_t data3[4096];
-  uint8_t data4[4096];
-  uint8_t data5[4096];
-  uint8_t data6[4096];
-  uint8_t data7[4096];
+  uint8_t data[6 * 4096];
   uint8_t buffer[25 * 1032];
   uint8_t *pointer;
   struct iovec iovec[25][1];
@@ -300,8 +306,8 @@ void *handler_ep6(void *arg)
   header_offset = 0;
   counter = 0;
 
-  *rx_rst |= 1;
   *rx_rst &= ~1;
+  *rx_rst |= 1;
 
   while(1)
   {
@@ -311,25 +317,15 @@ void *handler_ep6(void *arg)
     n = 504 / size;
     m = 256 / n;
 
-    if(*rx_cntr[0] >= 2048)
+    if(*rx_cntr >= 2048)
     {
-      *rx_rst |= 1;
       *rx_rst &= ~1;
+      *rx_rst |= 1;
     }
 
-    while(*rx_cntr[0] < m * n * 4) usleep(1000);
+    while(*rx_cntr < m * n * 2) usleep(1000);
 
-    for(i = 0; i < m * n * 16; i += 8)
-    {
-      *(uint64_t *)(data0 + i) = *rx_data[0];
-      *(uint64_t *)(data1 + i) = *rx_data[1];
-      *(uint64_t *)(data2 + i) = *rx_data[2];
-      *(uint64_t *)(data3 + i) = *rx_data[3];
-      *(uint64_t *)(data4 + i) = *rx_data[4];
-      *(uint64_t *)(data5 + i) = *rx_data[5];
-      *(uint64_t *)(data6 + i) = *rx_data[6];
-      *(uint64_t *)(data7 + i) = *rx_data[7];
-    }
+    memcpy(data, rx_data, m * n * 96);
 
     data_offset = 0;
     for(i = 0; i < m; ++i)
@@ -348,37 +344,8 @@ void *handler_ep6(void *arg)
       memset(pointer, 0, 504);
       for(j = 0; j < n; ++j)
       {
-        memcpy(pointer, data0 + data_offset, 6);
-        if(size > 8)
-        {
-          memcpy(pointer + 6, data1 + data_offset, 6);
-        }
-        if(size > 14)
-        {
-          memcpy(pointer + 12, data2 + data_offset, 6);
-        }
-        if(size > 20)
-        {
-          memcpy(pointer + 18, data3 + data_offset, 6);
-        }
-        if(size > 26)
-        {
-          memcpy(pointer + 24, data4 + data_offset, 6);
-        }
-        if(size > 32)
-        {
-          memcpy(pointer + 30, data5 + data_offset, 6);
-        }
-        if(size > 38)
-        {
-          memcpy(pointer + 36, data6 + data_offset, 6);
-        }
-        if(size > 44)
-        {
-          memcpy(pointer + 42, data7 + data_offset, 6);
-        }
-
-        data_offset += 8;
+        memcpy(pointer, data + data_offset, size - 2);
+        data_offset += 48;
         pointer += size;
       }
     }

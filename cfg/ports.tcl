@@ -29,4 +29,4 @@ create_bd_port -dir O dac_clk_o
 
 create_bd_port -dir O -from 2 -to 0 dac_spi_o
 
-create_bd_port -dir O -from 3 -to 0 dac_cfg_o
+create_bd_port -dir IO -from 3 -to 0 dac_tri_io

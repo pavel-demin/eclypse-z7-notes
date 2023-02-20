@@ -17,6 +17,22 @@ create_bd_design system
 
 source cfg/ports.tcl
 
+proc wire {name1 name2} {
+  set port1 [get_bd_pins $name1]
+  set port2 [get_bd_pins $name2]
+  if {[llength $port1] == 1 && [llength $port2] == 1} {
+    connect_bd_net $port1 $port2
+    return
+  }
+  set port1 [get_bd_intf_pins $name1]
+  set port2 [get_bd_intf_pins $name2]
+  if {[llength $port1] == 1 && [llength $port2] == 1} {
+    connect_bd_intf_net $port1 $port2
+    return
+  }
+  error "** ERROR: can't connect $name1 and $name2"
+}
+
 proc cell {cell_vlnv cell_name {cell_props {}} {cell_ports {}}} {
   set cell [create_bd_cell -type ip -vlnv $cell_vlnv $cell_name]
   set prop_list {}
@@ -27,19 +43,7 @@ proc cell {cell_vlnv cell_name {cell_props {}} {cell_ports {}}} {
     set_property -dict $prop_list $cell
   }
   foreach {local_name remote_name} [uplevel 1 [list subst $cell_ports]] {
-    set local_port [get_bd_pins $cell_name/$local_name]
-    set remote_port [get_bd_pins $remote_name]
-    if {[llength $local_port] == 1 && [llength $remote_port] == 1} {
-      connect_bd_net $local_port $remote_port
-      continue
-    }
-    set local_port [get_bd_intf_pins $cell_name/$local_name]
-    set remote_port [get_bd_intf_pins $remote_name]
-    if {[llength $local_port] == 1 && [llength $remote_port] == 1} {
-      connect_bd_intf_net $local_port $remote_port
-      continue
-    }
-    error "** ERROR: can't connect $cell_name/$local_name and $remote_name"
+    wire $cell_name/$local_name $remote_name
   }
 }
 
@@ -49,19 +53,7 @@ proc module {module_name module_body {module_ports {}}} {
   eval $module_body
   current_bd_instance $bd
   foreach {local_name remote_name} [uplevel 1 [list subst $module_ports]] {
-    set local_port [get_bd_pins $module_name/$local_name]
-    set remote_port [get_bd_pins $remote_name]
-    if {[llength $local_port] == 1 && [llength $remote_port] == 1} {
-      connect_bd_net $local_port $remote_port
-      continue
-    }
-    set local_port [get_bd_intf_pins $module_name/$local_name]
-    set remote_port [get_bd_intf_pins $remote_name]
-    if {[llength $local_port] == 1 && [llength $remote_port] == 1} {
-      connect_bd_intf_net $local_port $remote_port
-      continue
-    }
-    error "** ERROR: can't connect $module_name/$local_name and $remote_name"
+    wire $module_name/$local_name $remote_name
   }
 }
 
@@ -75,18 +67,30 @@ proc addr {offset range port master} {
 
 source projects/$project_name/block_design.tcl
 
+rename wire {}
 rename cell {}
 rename module {}
 rename addr {}
 
 if {[version -short] >= 2016.3} {
-  set_property synth_checkpoint_mode None [get_files $bd_path/system.bd]
+  set_property SYNTH_CHECKPOINT_MODE None [get_files $bd_path/system.bd]
 }
 
 generate_target all [get_files $bd_path/system.bd]
 make_wrapper -files [get_files $bd_path/system.bd] -top
 
 add_files -norecurse $bd_path/hdl/system_wrapper.v
+
+set_property TOP system_wrapper [current_fileset]
+
+set files [glob -nocomplain cores/common_modules/*.v]
+if {[llength $files] > 0} {
+  add_files -norecurse $files
+}
+
+foreach f $files {
+  set_property IS_GLOBAL_INCLUDE TRUE [get_files $f]
+}
 
 set files [glob -nocomplain projects/$project_name/*.v projects/$project_name/*.sv]
 if {[llength $files] > 0} {

@@ -28,6 +28,12 @@ cell pavel-demin:user:cdce_gpio gpio_0 {} {
   aclk ps_0/FCLK_CLK0
 }
 
+# Create dac_gpio
+cell pavel-demin:user:dac_gpio gpio_1 {} {
+  gpio dac_tri_io
+  aclk ps_0/FCLK_CLK0
+}
+
 # Create all required interconnections
 apply_bd_automation -rule xilinx.com:bd_rule:processing_system7 -config {
   make_external {FIXED_IO, DDR}
@@ -41,45 +47,33 @@ cell xilinx.com:ip:xlconstant const_0
 # Create proc_sys_reset
 cell xilinx.com:ip:proc_sys_reset rst_0 {} {
   ext_reset_in const_0/dout
+  dcm_locked pll_0/locked
+  slowest_sync_clk pll_0/clk_out1
 }
 
-# CFG
+# HUB
 
 # Create axi_cfg_register
-cell pavel-demin:user:axi_cfg_register cfg_0 {
+cell pavel-demin:user:axi_hub hub_0 {
   CFG_DATA_WIDTH 32
-  AXI_ADDR_WIDTH 32
-  AXI_DATA_WIDTH 32
-}
-
-# Create port_slicer
-cell pavel-demin:user:port_slicer slice_0 {
-  DIN_WIDTH 32 DIN_FROM 3 DIN_TO 0
+  STS_DATA_WIDTH 32
 } {
-  din cfg_0/cfg_data
-  dout dac_cfg_o
-}
-
-# ADC SPI
-
-# Create axi_axis_writer
-cell pavel-demin:user:axi_axis_writer writer_0 {
-  AXI_DATA_WIDTH 32
-} {
+  S_AXI ps_0/M_AXI_GP0
   aclk pll_0/clk_out1
   aresetn rst_0/peripheral_aresetn
 }
 
-# Create axis_data_fifo
-cell xilinx.com:ip:axis_data_fifo fifo_0 {
-  TDATA_NUM_BYTES.VALUE_SRC USER
-  TDATA_NUM_BYTES 4
-  FIFO_DEPTH 1024
-  HAS_WR_DATA_COUNT true
+# ADC SPI
+
+# Create axis_fifo
+cell pavel-demin:user:axis_fifo fifo_0 {
+  S_AXIS_TDATA_WIDTH 32
+  M_AXIS_TDATA_WIDTH 32
+  WRITE_DEPTH 1024
 } {
-  S_AXIS writer_0/M_AXIS
-  s_axis_aclk pll_0/clk_out1
-  s_axis_aresetn rst_0/peripheral_aresetn
+  S_AXIS hub_0/M00_AXIS
+  aclk pll_0/clk_out1
+  aresetn rst_0/peripheral_aresetn
 }
 
 # Create axis_spi
@@ -118,24 +112,15 @@ cell xilinx.com:ip:axis_broadcaster bcast_0 {
 
 # DAC SPI
 
-# Create axi_axis_writer
-cell pavel-demin:user:axi_axis_writer writer_1 {
-  AXI_DATA_WIDTH 32
+# Create axis_data_fifo
+cell pavel-demin:user:axis_fifo fifo_1 {
+  S_AXIS_TDATA_WIDTH 32
+  M_AXIS_TDATA_WIDTH 32
+  WRITE_DEPTH 1024
 } {
+  S_AXIS hub_0/M01_AXIS
   aclk pll_0/clk_out1
   aresetn rst_0/peripheral_aresetn
-}
-
-# Create axis_data_fifo
-cell xilinx.com:ip:axis_data_fifo fifo_1 {
-  TDATA_NUM_BYTES.VALUE_SRC USER
-  TDATA_NUM_BYTES 4
-  FIFO_DEPTH 1024
-  HAS_WR_DATA_COUNT true
-} {
-  S_AXIS writer_1/M_AXIS
-  s_axis_aclk pll_0/clk_out1
-  s_axis_aresetn rst_0/peripheral_aresetn
 }
 
 # Create axis_spi
@@ -186,9 +171,3 @@ cell pavel-demin:user:axis_zmod_dac dac_0 {
   dac_clk dac_clk_o
   dac_data dac_data_o
 }
-
-addr 0x40001000 4K cfg_0/S_AXI /ps_0/M_AXI_GP0
-
-addr 0x40002000 4K writer_0/S_AXI /ps_0/M_AXI_GP0
-
-addr 0x40003000 4K writer_1/S_AXI /ps_0/M_AXI_GP0

@@ -25,9 +25,7 @@ ssize_t i2c_write(int fd, uint16_t addr, uint16_t data)
 int main(int argc, char *argv[])
 {
   int fd, i2c_fd;
-  volatile void *gpio, *cfg;
-  volatile uint32_t *gpio_dat, *gpio_tri, *adc_spi, *dac_spi;
-  volatile uint8_t *dac_cfg;
+  volatile uint32_t *adc_spi, *dac_spi;
 
   if((fd = open("/dev/mem", O_RDWR)) < 0)
   {
@@ -70,11 +68,8 @@ int main(int argc, char *argv[])
 
   usleep(10000);
 
-  cfg = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40001000);
-  adc_spi = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40002000);
-  dac_spi = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40003000);
-
-  dac_cfg = cfg + 0;
+  adc_spi = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40200000);
+  dac_spi = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40300000);
 
   *adc_spi = 0x00003C;
   *adc_spi = 0x000803;
@@ -83,10 +78,6 @@ int main(int argc, char *argv[])
   *adc_spi = 0x001421;
   *adc_spi = 0x000501;
   *adc_spi = 0x001431;
-
-  *dac_cfg = 0;
-  *dac_cfg = 8;
-  *dac_cfg = 1;
 
   *dac_spi = 0x02B0;
   *dac_spi = 0x1404;

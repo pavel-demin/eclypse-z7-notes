@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 
   usleep(10000);
 
-  spi = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40002000);
+  spi = mmap(NULL, sysconf(_SC_PAGESIZE), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0x40200000);
 
   *spi = 0x555555;
   *spi = 0xAAAAAA;

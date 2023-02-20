@@ -16,8 +16,10 @@ cell xilinx.com:ip:clk_wiz pll_0 {
 # Create processing_system7
 cell xilinx.com:ip:processing_system7 ps_0 {
   PCW_IMPORT_BOARD_PRESET cfg/eclypse_z7.xml
+  PCW_USE_M_AXI_GP1 1
 } {
   M_AXI_GP0_ACLK pll_0/clk_out1
+  M_AXI_GP1_ACLK pll_0/clk_out1
 }
 
 make_bd_intf_pins_external [get_bd_intf_pins ps_0/IIC_0]
@@ -41,28 +43,33 @@ cell xilinx.com:ip:xlconstant const_0
 # Create proc_sys_reset
 cell xilinx.com:ip:proc_sys_reset rst_0 {} {
   ext_reset_in const_0/dout
+  dcm_locked pll_0/locked
+  slowest_sync_clk pll_0/clk_out1
 }
 
-# ADC SPI
+# HUB
 
-# Create axi_axis_writer
-cell pavel-demin:user:axi_axis_writer writer_0 {
-  AXI_DATA_WIDTH 32
+# Create axi_cfg_register
+cell pavel-demin:user:axi_hub hub_0 {
+  CFG_DATA_WIDTH 32
+  STS_DATA_WIDTH 32
 } {
+  S_AXI ps_0/M_AXI_GP0
   aclk pll_0/clk_out1
   aresetn rst_0/peripheral_aresetn
 }
 
-# Create axis_data_fifo
-cell xilinx.com:ip:axis_data_fifo fifo_0 {
-  TDATA_NUM_BYTES.VALUE_SRC USER
-  TDATA_NUM_BYTES 4
-  FIFO_DEPTH 1024
-  HAS_WR_DATA_COUNT true
+# ADC SPI
+
+# Create axis_fifo
+cell pavel-demin:user:axis_fifo fifo_0 {
+  S_AXIS_TDATA_WIDTH 32
+  M_AXIS_TDATA_WIDTH 32
+  WRITE_DEPTH 1024
 } {
-  S_AXIS writer_0/M_AXIS
-  s_axis_aclk pll_0/clk_out1
-  s_axis_aresetn rst_0/peripheral_aresetn
+  S_AXIS hub_0/M00_AXIS
+  aclk pll_0/clk_out1
+  aresetn rst_0/peripheral_aresetn
 }
 
 # Create axis_spi
@@ -89,6 +96,6 @@ cell pavel-demin:user:axis_zmod_adc adc_0 {
 
 module common_0 {
   source projects/common_tools/block_design.tcl
+} {
+  hub_0/S_AXI ps_0/M_AXI_GP1
 }
-
-addr 0x40000000 4K writer_0/S_AXI /ps_0/M_AXI_GP0

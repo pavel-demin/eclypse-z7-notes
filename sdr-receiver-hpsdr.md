@@ -7,7 +7,7 @@ permalink: /sdr-receiver-hpsdr/
 Introduction
 -----
 
-This SDR receiver emulates a [Hermes](https://openhpsdr.org/hermes.php) module with eight receivers. It may be useful for projects that require eight receivers compatible with the programs that support the HPSDR/Metis communication protocol.
+This SDR receiver emulates two [Hermes](https://openhpsdr.org/hermes.php) modules with eight receivers. It may be useful for projects that require sixteen receivers compatible with the programs that support the HPSDR/Metis communication protocol.
 
 The HPSDR/Metis communication protocol is described in the following documents:
 
@@ -20,7 +20,7 @@ This application requires that the Zmod Digitizer is connected to the ZMOD A con
 Hardware
 -----
 
-The FPGA configuration consists of eight identical digital down-converters (DDC). Their structure is shown on the following diagram:
+The FPGA configuration consists of sixteen identical digital down-converters (DDC). Their structure is shown on the following diagram:
 
 ![HPSDR receiver]({{ "/img/sdr-receiver-hpsdr.png" | prepend: site.baseurl }})
 
@@ -63,10 +63,13 @@ Getting started
 Running CW Skimmer Server and Reverse Beacon Network Aggregator
 -----
 
- - Install [CW Skimmer Server](http://dxatlas.com/skimserver).
+ - Install [CW Skimmer Server](https://dxatlas.com/skimserver).
  - Copy [HermesIntf.dll](https://github.com/k3it/HermesIntf/releases) to the CW Skimmer Server program directory (C:\Program Files (x86)\Afreet\SkimSrv).
- - Install [Reverse Beacon Network Aggregator](http://www.reversebeacon.net/pages/Aggregator+34).
- - Start CW Skimmer Server, configure frequencies and your call sign.
+ - In the `SkimSrv` directory, rename `HermesIntf.dll` to `HermestIntf_XXXX.dll` where `XXXX` are the last four digits of the MAC address of the Eclypse Z7 board.
+ - Make a copy of the `SkimSrv` directory and rename the copy to `SkimSrv2`.
+ - In the `SkimSrv2` directory, rename `SkimSrv.exe` to `SkimSrv2.exe` and rename `HermestIntf_XXXX.dll` to `HermestIntf_FFXX.dll`.
+ - Install [Reverse Beacon Network Aggregator](https://www.reversebeacon.net/pages/Aggregator+34).
+ - Start `SkimSrv.exe` and `SkimSrv2.exe`, configure frequencies and your call sign.
  - Start Reverse Beacon Network Aggregator.
 
 Building from source

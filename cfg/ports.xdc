@@ -70,20 +70,20 @@ set_property PACKAGE_PIN M21 [get_ports {adc_spi_o[2]}]
 
 ### CDCE GPIO
 
-set_property IOSTANDARD LVCMOS18 [get_ports {cdce_tri_io[*]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {cdce_gpio_tri_io[*]}]
 
-set_property PACKAGE_PIN P17 [get_ports {cdce_tri_io[0]}]
-set_property PACKAGE_PIN T16 [get_ports {cdce_tri_io[1]}]
-set_property PACKAGE_PIN T19 [get_ports {cdce_tri_io[2]}]
-set_property PACKAGE_PIN P18 [get_ports {cdce_tri_io[3]}]
-set_property PACKAGE_PIN N15 [get_ports {cdce_tri_io[4]}]
+set_property PACKAGE_PIN P17 [get_ports {cdce_gpio_tri_io[0]}]
+set_property PACKAGE_PIN T16 [get_ports {cdce_gpio_tri_io[1]}]
+set_property PACKAGE_PIN T19 [get_ports {cdce_gpio_tri_io[2]}]
+set_property PACKAGE_PIN P18 [get_ports {cdce_gpio_tri_io[3]}]
+set_property PACKAGE_PIN N15 [get_ports {cdce_gpio_tri_io[4]}]
 
 ### CDCE IIC
 
-set_property IOSTANDARD LVCMOS18 [get_ports IIC_0_0_*_io]
+set_property IOSTANDARD LVCMOS18 [get_ports {cdce_iic_tri_io[*]}]
 
-set_property PACKAGE_PIN T17 [get_ports IIC_0_0_scl_io]
-set_property PACKAGE_PIN R19 [get_ports IIC_0_0_sda_io]
+set_property PACKAGE_PIN T17 [get_ports {cdce_iic_tri_io[0]}]
+set_property PACKAGE_PIN R19 [get_ports {cdce_iic_tri_io[1]}]
 
 ### DAC
 

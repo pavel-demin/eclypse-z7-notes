@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 {
   int i2c_fd;
 
-  usleep(10000);
+  usleep(100000);
 
   if((i2c_fd = open("/dev/i2c-0", O_RDWR)) >= 0)
   {

@@ -20,8 +20,6 @@ cell xilinx.com:ip:processing_system7 ps_0 {
   M_AXI_GP0_ACLK pll_0/clk_out1
 }
 
-make_bd_intf_pins_external [get_bd_intf_pins ps_0/IIC_0]
-
 # Create all required interconnections
 apply_bd_automation -rule xilinx.com:bd_rule:processing_system7 -config {
   make_external {FIXED_IO, DDR}
@@ -46,10 +44,21 @@ cell xilinx.com:ip:xlslice slice_0 {
   Dout led_o
 }
 
+# CDCE IIC
+
+# Create cdce_iic
+cell pavel-demin:user:cdce_iic iic_0 {
+  DATA_SIZE 132
+  DATA_FILE [pwd]/cfg/cdce_100.mem
+} {
+  iic cdce_iic_tri_io
+  aclk ps_0/FCLK_CLK0
+}
+
 # CDCE GPIO
 
 # Create cdce_gpio
 cell pavel-demin:user:cdce_gpio gpio_0 {} {
-  gpio cdce_tri_io
+  gpio cdce_gpio_tri_io
   aclk ps_0/FCLK_CLK0
 }

@@ -33,11 +33,10 @@ Here are the commands to install all the other required packages:
 sudo apt-get update
 
 sudo apt-get --no-install-recommends install \
-  build-essential bison flex git curl ca-certificates sudo \
-  xvfb fontconfig libxrender1 libxtst6 libxi6 lib32ncurses5 \
-  bc u-boot-tools device-tree-compiler libncurses5-dev \
-  libssl-dev qemu-user-static binfmt-support zip \
-  squashfs-tools dosfstools parted debootstrap zerofree
+  bc binfmt-support bison build-essential ca-certificates curl \
+  debootstrap device-tree-compiler dosfstools flex fontconfig git \
+  libgtk-3-0 libncurses-dev libssl-dev libtinfo5 parted qemu-user-static \
+  squashfs-tools sudo u-boot-tools x11-utils xvfb zerofree zip
 {% endhighlight %}
 
 Source code

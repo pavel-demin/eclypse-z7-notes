@@ -68,7 +68,7 @@ sudo apt-get install gnuradio
 {% highlight bash %}
 git clone https://github.com/pavel-demin/eclypse-z7-notes
 {% endhighlight %}
- - Run [GNU Radio Companion](http://gnuradio.org/redmine/projects/gnuradio/wiki/GNURadioCompanion) and open FM receiver flow graph:
+ - Run [GNU Radio Companion](https://wiki.gnuradio.org/index.php/GNURadioCompanion) and open FM receiver flow graph:
 {% highlight bash %}
 cd eclypse-z7-notes/projects/sdr_transceiver/gnuradio
 export GRC_BLOCKS_PATH=.

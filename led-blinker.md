@@ -11,7 +11,7 @@ For my experiments with the Eclypse Z7 board, I'd like to have the following dev
 
  - recent version of the [Vitis Core Development Kit](https://www.xilinx.com/products/design-tools/vitis.html)
  - recent version of the [Linux kernel](https://www.kernel.org)
- - recent version of the [Debian distribution](https://www.debian.org/releases/stretch) on the development machine
+ - recent version of the [Debian distribution](https://www.debian.org/releases/bullseye) on the development machine
  - recent version of the [Alpine distribution](https://alpinelinux.org) on the Eclypse Z7 board
  - basic project with all the Eclypse Z7 peripherals connected
  - mostly command-line tools
@@ -24,7 +24,7 @@ Pre-requirements
 
 My development machine has the following installed:
 
- - [Debian](https://www.debian.org/releases/stretch) 9.12 (amd64)
+ - [Debian](https://www.debian.org/releases/bullseye) 11.6 (amd64)
 
  - [Vitis Core Development Kit](https://www.xilinx.com/products/design-tools/vitis.html) 2020.2
 

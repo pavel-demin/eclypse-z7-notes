@@ -38,8 +38,6 @@ sudo apt-get --no-install-recommends install \
   bc u-boot-tools device-tree-compiler libncurses5-dev \
   libssl-dev qemu-user-static binfmt-support zip \
   squashfs-tools dosfstools parted debootstrap zerofree
-
-sudo ln -s make /usr/bin/gmake
 {% endhighlight %}
 
 Source code

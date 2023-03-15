@@ -49,7 +49,7 @@ cell xilinx.com:ip:xlslice slice_0 {
 # Create cdce_iic
 cell pavel-demin:user:cdce_iic iic_0 {
   DATA_SIZE 132
-  DATA_FILE [pwd]/cfg/cdce_100.mem
+  DATA_FILE cdce_100.mem
 } {
   iic cdce_iic_tri_io
   aclk ps_0/FCLK_CLK0

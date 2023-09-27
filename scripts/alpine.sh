@@ -1,12 +1,12 @@
-alpine_url=http://dl-cdn.alpinelinux.org/alpine/v3.14
+alpine_url=http://dl-cdn.alpinelinux.org/alpine/v3.18
 
-uboot_tar=alpine-uboot-3.14.2-armv7.tar.gz
+uboot_tar=alpine-uboot-3.18.3-armv7.tar.gz
 uboot_url=$alpine_url/releases/armv7/$uboot_tar
 
-tools_tar=apk-tools-static-2.12.7-r0.apk
+tools_tar=apk-tools-static-2.14.0-r2.apk
 tools_url=$alpine_url/main/armv7/$tools_tar
 
-firmware_tar=linux-firmware-other-20210716-r0.apk
+firmware_tar=linux-firmware-other-20230515-r6.apk
 firmware_url=$alpine_url/main/armv7/$firmware_tar
 
 linux_dir=tmp/linux-6.1
@@ -21,7 +21,7 @@ test -f $tools_tar || curl -L $tools_url -o $tools_tar
 
 test -f $firmware_tar || curl -L $firmware_url -o $firmware_tar
 
-for tar in linux-firmware-ath9k_htc-20210716-r0.apk linux-firmware-brcm-20210716-r0.apk linux-firmware-cypress-20210716-r0.apk linux-firmware-rtlwifi-20210716-r0.apk
+for tar in linux-firmware-ath9k_htc-20230515-r6.apk linux-firmware-brcm-20230515-r6.apk linux-firmware-cypress-20230515-r6.apk linux-firmware-rtlwifi-20230515-r6.apk
 do
   url=$alpine_url/main/armv7/$tar
   test -f $tar || curl -L $url -o $tar
@@ -57,7 +57,7 @@ depmod -a -b alpine-modloop $linux_ver
 
 tar -zxf $firmware_tar --directory=alpine-modloop/lib/modules --warning=no-unknown-keyword --strip-components=1 --wildcards lib/firmware/ar* lib/firmware/rt*
 
-for tar in linux-firmware-ath9k_htc-20210716-r0.apk linux-firmware-brcm-20210716-r0.apk linux-firmware-cypress-20210716-r0.apk linux-firmware-rtlwifi-20210716-r0.apk
+for tar in linux-firmware-ath9k_htc-20230515-r6.apk linux-firmware-brcm-20230515-r6.apk linux-firmware-cypress-20230515-r6.apk linux-firmware-rtlwifi-20230515-r6.apk
 do
   tar -zxf $tar --directory=alpine-modloop/lib/modules --warning=no-unknown-keyword --strip-components=1
 done
@@ -108,7 +108,7 @@ rc-update add modloop boot
 rc-update add swclock boot
 rc-update add sysctl boot
 rc-update add syslog boot
-rc-update add urandom boot
+rc-update add seedrng boot
 
 rc-update add killprocs shutdown
 rc-update add mount-ro shutdown
@@ -158,7 +158,7 @@ lbu delete root/.ash_history
 
 lbu commit -d
 
-apk add patch make gcc gfortran linux-headers
+apk add make gcc gfortran linux-headers
 
 for project in server sdr_receiver_hpsdr sdr_receiver_wide sdr_transceiver
 do
@@ -188,6 +188,6 @@ hostname -F /etc/hostname
 
 rm -rf $root_dir alpine-apk
 
-zip -r eclypse-z7-alpine-3.14-armv7-`date +%Y%m%d`.zip apps boot.bin cache devicetree.dtb modloop eclypse-z7.apkovl.tar.gz uEnv.txt uImage uInitrd wifi
+zip -r eclypse-z7-alpine-3.18-armv7-`date +%Y%m%d`.zip apps boot.bin cache devicetree.dtb eclypse-z7.apkovl.tar.gz modloop uEnv.txt uImage uInitrd wifi
 
-rm -rf apps cache modloop eclypse-z7.apkovl.tar.gz uInitrd wifi
+rm -rf apps cache eclypse-z7.apkovl.tar.gz modloop uInitrd wifi

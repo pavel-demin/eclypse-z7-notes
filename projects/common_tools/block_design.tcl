@@ -1,10 +1,11 @@
 # HUB
 
-# Create axi_cfg_register
+# Create axi_hub
 cell pavel-demin:user:axi_hub hub_0 {
   CFG_DATA_WIDTH 64
   STS_DATA_WIDTH 32
 } {
+  S_AXI /ps_0/M_AXI_GP1
   aclk /pll_0/clk_out1
   aresetn /rst_0/peripheral_aresetn
 }

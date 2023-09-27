@@ -103,6 +103,4 @@ cell pavel-demin:user:axis_zmod_adc adc_0 {
 
 module common_0 {
   source projects/common_tools/block_design.tcl
-} {
-  hub_0/S_AXI ps_0/M_AXI_GP1
 }

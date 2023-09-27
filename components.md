@@ -12,9 +12,9 @@ Premier Farnell
 
  - [SMA-BNC adapter, SMA plug, BNC jack](https://uk.farnell.com/jsp/search/productdetail.jsp?id=1169564)
 
- - [SMA tee adapter, SMA plug, SMA jack, SMA jack](http://uk.farnell.com/jsp/search/productdetail.jsp?id=2135972)
+ - [SMA tee adapter, SMA plug, SMA jack, SMA jack](https://uk.farnell.com/jsp/search/productdetail.jsp?id=2135972)
 
- - [SMA terminator, 50 Ohm](http://uk.farnell.com/jsp/search/productdetail.jsp?id=2112480)
+ - [SMA terminator, 50 Ohm](https://uk.farnell.com/jsp/search/productdetail.jsp?id=2112480)
 
 Mini-Circuits
 -----

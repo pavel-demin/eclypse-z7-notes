@@ -60,7 +60,7 @@ Getting started with GNU Radio
  - Copy the contents of the SD card image zip file to a micro SD card.
  - Optionally, to start the application automatically at boot time, copy its `start.sh` file from `apps/sdr_transceiver` to the topmost directory on the SD card.
  - Install the micro SD card in the Eclypse Z7 board and connect the power.
- - Install [GNU Radio](http://gnuradio.org):
+ - Install [GNU Radio](https://gnuradio.org):
 {% highlight bash %}
 sudo apt-get install gnuradio
 {% endhighlight %}
@@ -83,7 +83,7 @@ Getting started with SDR# and HDSDR
  - Copy the contents of the SD card image zip file to a micro SD card.
  - Optionally, to start the application automatically at boot time, copy its `start.sh` file from `apps/sdr_transceiver` to the topmost directory on the SD card.
  - Install the micro SD card in the Eclypse Z7 board and connect the power.
- - Download and install [SDR#](https://www.dropbox.com/sh/5fy49wae6xwxa8a/AAAdAcU238cppWziK4xPRIADa/sdr/sdrsharp_v1.0.0.1361_with_plugins.zip?dl=1) or [HDSDR](http://www.hdsdr.de/).
+ - Download and install [SDR#](https://www.dropbox.com/sh/5fy49wae6xwxa8a/AAAdAcU238cppWziK4xPRIADa/sdr/sdrsharp_v1.0.0.1361_with_plugins.zip?dl=1) or [HDSDR](https://www.hdsdr.de).
  - Download and install [Microsoft Visual C++ Redistributable for Visual Studio 2019](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist).
  - Download [ExtIO plug-in](https://www.dropbox.com/sh/5fy49wae6xwxa8a/AAA6mFLQaCF-wT2fhACJHotra/sdr/ExtIO_RedPitaya_122_88.dll?dl=1) for SDR# and HDSDR.
  - Copy `ExtIO_RedPitaya_122_88.dll` into the SDR# or HDSDR installation directory.

@@ -65,7 +65,7 @@ $(UBOOT_DIR): $(UBOOT_TAR)
 	tar -jxf $< --strip-components=1 --directory=$@
 	patch -d tmp -p 0 < patches/u-boot-$(UBOOT_TAG).patch
 	cp patches/zynq_eclypse_z7_defconfig $@/configs
-	cp patches/zynq-red-pitaya.dts $@/arch/arm/dts
+	cp patches/zynq-eclypse-z7.dts $@/arch/arm/dts
 
 $(LINUX_DIR): $(LINUX_TAR) $(RTL8188_TAR)
 	mkdir -p $@

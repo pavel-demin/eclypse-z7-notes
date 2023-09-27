@@ -8,11 +8,8 @@ NAME = led_blinker
 PART = xc7z020clg484-1
 PROC = ps7_cortexa9_0
 
-CORES = axi_hub_v1_0 axis_constant_v1_0 axis_fifo_v2_0 axis_lfsr_v1_0 \
-  axis_maxabs_finder_v1_0 axis_pps_counter_v1_0 axis_ram_writer_v1_0 \
-  axis_spi_v1_0 axis_variable_v1_0 axis_zmod_adc_v1_0 axis_zmod_dac_v1_0 \
-  cdce_gpio_v1_0 cdce_iic_v1_0 dac_gpio_v1_0 dsp48_v1_0 port_selector_v1_0 \
-  port_slicer_v1_0
+FILES = $(wildcard cores/*.v)
+CORES = $(FILES:.v=)
 
 VIVADO = vivado -nolog -nojournal -mode batch
 XSCT = xsct
@@ -44,7 +41,7 @@ RTL8192_URL = https://github.com/pvaret/rtl8192cu-fixes/archive/master.tar.gz
 
 all: tmp/$(NAME).bit boot.bin uImage devicetree.dtb
 
-cores: $(addprefix tmp/cores/, $(CORES))
+cores: $(addprefix tmp/, $(CORES))
 
 xpr: tmp/$(NAME).xpr
 
@@ -117,11 +114,11 @@ devicetree.dtb: uImage tmp/$(NAME).tree/system-top.dts
 	$(LINUX_DIR)/scripts/dtc/dtc -I dts -O dtb -o devicetree.dtb \
 	  -i tmp/$(NAME).tree tmp/$(NAME).tree/system-top.dts
 
-tmp/cores/%: cores/%/core_config.tcl cores/%/*.v
+tmp/cores/%: cores/%.v
 	mkdir -p $(@D)
 	$(VIVADO) -source scripts/core.tcl -tclargs $* $(PART)
 
-tmp/%.xpr: projects/% $(addprefix tmp/cores/, $(CORES))
+tmp/%.xpr: projects/% $(addprefix tmp/, $(CORES))
 	mkdir -p $(@D)
 	$(VIVADO) -source scripts/project.tcl -tclargs $* $(PART)
 

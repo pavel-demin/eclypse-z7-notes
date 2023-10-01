@@ -86,7 +86,7 @@ for {set i 0} {$i <= 15} {incr i} {
   # Create dsp48
   cell pavel-demin:user:dsp48 mult_$i {
     A_WIDTH 24
-    B_WIDTH 16
+    B_WIDTH 14
     P_WIDTH 24
   } {
     A dds_slice_$i/dout

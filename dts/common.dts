@@ -1,0 +1,21 @@
+/ {
+  usb_phy0: phy0 {
+    #phy-cells = <0>;
+    compatible = "ulpi-phy";
+    reg = <0xe0002000 0x1000>;
+    view-port = <0x0170>;
+    drv-vbus;
+  };
+  pps {
+    compatible = "pps-gpio";
+    gpios = <&gpio0 54 0>;
+    capture-clear;
+  };
+};
+
+&usb0 {
+  dr_mode = "host";
+  usb-phy = <&usb_phy0>;
+  status = "okay";
+  xlnx,phy-reset-gpio = <&gpio0 46 0>;
+};

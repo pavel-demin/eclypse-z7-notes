@@ -1,8 +1,5 @@
 alpine_url=http://dl-cdn.alpinelinux.org/alpine/v3.18
 
-uboot_tar=alpine-uboot-3.18.3-armv7.tar.gz
-uboot_url=$alpine_url/releases/armv7/$uboot_tar
-
 tools_tar=apk-tools-static-2.14.0-r2.apk
 tools_url=$alpine_url/main/armv7/$tools_tar
 
@@ -16,7 +13,6 @@ modules_dir=alpine-modloop/lib/modules/$linux_ver
 
 passwd=changeme
 
-test -f $uboot_tar || curl -L $uboot_url -o $uboot_tar
 test -f $tools_tar || curl -L $tools_url -o $tools_tar
 
 test -f $firmware_tar || curl -L $firmware_url -o $firmware_tar
@@ -27,25 +23,8 @@ do
   test -f $tar || curl -L $url -o $tar
 done
 
-mkdir alpine-uboot
-tar -zxf $uboot_tar --directory=alpine-uboot
-
 mkdir alpine-apk
 tar -zxf $tools_tar --directory=alpine-apk --warning=no-unknown-keyword
-
-mkdir alpine-initramfs
-cd alpine-initramfs
-
-gzip -dc ../alpine-uboot/boot/initramfs-lts | cpio -id
-rm -rf etc/modprobe.d
-rm -rf lib/firmware
-rm -rf lib/modules
-rm -rf var
-find . | sort | cpio --quiet -o -H newc | gzip -9 > ../initrd.gz
-
-cd ..
-
-mkimage -A arm -T ramdisk -C gzip -d initrd.gz uInitrd
 
 mkdir -p $modules_dir/kernel
 
@@ -64,7 +43,7 @@ done
 
 mksquashfs alpine-modloop/lib modloop -b 1048576 -comp xz -Xdict-size 100%
 
-rm -rf alpine-uboot alpine-initramfs initrd.gz alpine-modloop
+rm -rf alpine-modloop
 
 root_dir=alpine-root
 
@@ -139,7 +118,6 @@ sed -i 's/^#PermitRootLogin.*/PermitRootLogin yes/' etc/ssh/sshd_config
 
 echo root:$passwd | chpasswd
 
-setup-hostname eclypse-z7
 hostname eclypse-z7
 
 sed -i 's/^# LBU_MEDIA=.*/LBU_MEDIA=mmcblk0p1/' etc/lbu/lbu.conf
@@ -188,6 +166,6 @@ hostname -F /etc/hostname
 
 rm -rf $root_dir alpine-apk
 
-zip -r eclypse-z7-alpine-3.18-armv7-`date +%Y%m%d`.zip apps boot.bin cache devicetree.dtb eclypse-z7.apkovl.tar.gz modloop uEnv.txt uImage uInitrd wifi
+zip -r eclypse-z7-alpine-3.18-armv7-`date +%Y%m%d`.zip apps boot.bin cache eclypse-z7.apkovl.tar.gz modloop wifi
 
-rm -rf apps cache eclypse-z7.apkovl.tar.gz modloop uInitrd wifi
+rm -rf apps cache eclypse-z7.apkovl.tar.gz modloop wifi

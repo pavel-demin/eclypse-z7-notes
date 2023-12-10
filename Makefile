@@ -94,7 +94,7 @@ initrd.bin: $(INITRAMFS_DIR)
 
 boot.bin: tmp/$(NAME).fsbl/executable.elf tmp/ssbl.elf initrd.dtb zImage.bin initrd.bin
 	echo "img:{[bootloader] tmp/$(NAME).fsbl/executable.elf tmp/ssbl.elf [load=0x2000000] initrd.dtb [load=0x2008000] zImage.bin [load=0x3000000] initrd.bin}" > tmp/boot.bif
-	bootgen -image tmp/boot.bif -w -o i $@
+	bootgen -image tmp/boot.bif -w -o $@
 
 initrd.dtb: tmp/$(NAME).tree/system-top.dts
 	dtc -I dts -O dtb -o $@ -i tmp/$(NAME).tree -i dts dts/initrd.dts

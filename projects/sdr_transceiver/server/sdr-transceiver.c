@@ -13,9 +13,10 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+volatile uint64_t *fifo;
 volatile uint32_t *rx_freq, *tx_freq;
 volatile uint16_t *rx_rate, *rx_cntr, *tx_rate, *tx_cntr;
-volatile uint8_t *fifo, *rx_rst, *rx_sync, *tx_rst, *tx_sync;
+volatile uint8_t *rx_rst, *rx_sync, *tx_rst, *tx_sync;
 
 int sock_thread[4] = {-1, -1, -1, -1};
 

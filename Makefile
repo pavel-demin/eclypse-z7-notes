@@ -30,7 +30,7 @@ INITRAMFS_URL = https://dl-cdn.alpinelinux.org/alpine/v$(INITRAMFS_TAG)/releases
 LINUX_URL = https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-$(LINUX_TAG).55.tar.xz
 DTREE_URL = https://github.com/Xilinx/device-tree-xlnx/archive/$(DTREE_TAG).tar.gz
 
-SSBL_URL = https://github.com/pavel-demin/ssbl/releases/download/20231206/ssbl.elf
+SSBL_URL = https://github.com/pavel-demin/ssbl/releases/latest/download/ssbl.elf
 
 RTL8188_TAR = tmp/rtl8188eu-v5.2.2.4.tar.gz
 RTL8188_URL = https://github.com/lwfinger/rtl8188eu/archive/v5.2.2.4.tar.gz

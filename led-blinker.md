@@ -95,7 +95,7 @@ git clone https://github.com/pavel-demin/eclypse-z7-notes
 cd eclypse-z7-notes
 {% endhighlight %}
 
-Building `boot.bin`, `devicetree.dtb` and `uImage`:
+Building `boot.bin`:
 {% highlight bash %}
 make NAME=led_blinker all
 {% endhighlight %}

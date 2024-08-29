@@ -84,12 +84,11 @@ Getting started with SDR# and HDSDR
  - Optionally, to start the application automatically at boot time, copy its `start.sh` file from `apps/sdr_transceiver` to the topmost directory on the SD card.
  - Install the micro SD card in the Eclypse Z7 board and connect the power.
  - Download and install [SDR#](https://www.dropbox.com/sh/5fy49wae6xwxa8a/AAAdAcU238cppWziK4xPRIADa/sdr/sdrsharp_v1.0.0.1361_with_plugins.zip?dl=1) or [HDSDR](https://www.hdsdr.de).
- - Download and install [Microsoft Visual C++ Redistributable for Visual Studio 2019](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist).
- - Download [ExtIO plug-in](https://www.dropbox.com/sh/5fy49wae6xwxa8a/AAA6mFLQaCF-wT2fhACJHotra/sdr/ExtIO_RedPitaya_122_88.dll?dl=1) for SDR# and HDSDR.
- - Copy `ExtIO_RedPitaya_122_88.dll` into the SDR# or HDSDR installation directory.
+ - Download [pre-built ExtIO plug-in]({{ site.extio-file }}) for SDR# and HDSDR.
+ - Copy `extio_red_pitaya.dll` into the SDR# or HDSDR installation directory.
  - Start SDR# or HDSDR.
- - Select Red Pitaya SDR 122.88 from the Source list in SDR# or from the Options [F7] &rarr; Select Input menu in HDSDR.
- - Press Configure icon in SDR# or press ExtIO button in HDSDR, then type in the IP address of the Eclypse Z7 board and close the configuration window.
+ - Select Red Pitaya from the Source list in SDR# or from the Options [F7] &rarr; Select Input menu in HDSDR.
+ - Press Configure icon in SDR# or press SDR-Device [F8] button in HDSDR, then enter the IP address of the Eclypse Z7 board and set ADC sample rate to 122.88 MSPS.
  - Press Play icon in SDR# or press Start [F2] button in HDSDR.
 
 Building from source

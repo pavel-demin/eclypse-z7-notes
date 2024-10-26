@@ -1,7 +1,6 @@
 ---
 layout: page
 title: SDR transceiver
-permalink: /sdr-transceiver/
 ---
 
 Introduction
@@ -41,7 +40,7 @@ The I/Q data rate is configurable and five settings are available: 24, 48, 96, 1
 
 The basic blocks of the digital down-converters (DDC) and of the digital up-converters (DUC) are shown in the following diagram:
 
-![SDR transceiver]({{ "/img/sdr-transceiver.png" | prepend: site.baseurl }})
+![SDR transceiver]({% link img/sdr-transceiver.png %})
 
 The [projects/sdr_transceiver](https://github.com/pavel-demin/eclypse-z7-notes/tree/master/projects/sdr_transceiver) directory contains four Tcl files: [block_design.tcl](https://github.com/pavel-demin/eclypse-z7-notes/blob/master/projects/sdr_transceiver/block_design.tcl), [trx.tcl](https://github.com/pavel-demin/eclypse-z7-notes/blob/master/projects/sdr_transceiver/trx.tcl), [rx.tcl](https://github.com/pavel-demin/eclypse-z7-notes/blob/master/projects/sdr_transceiver/rx.tcl), [tx.tcl](https://github.com/pavel-demin/eclypse-z7-notes/blob/master/projects/sdr_transceiver/tx.tcl). The code in these files instantiates, configures and interconnects all the needed IP cores.
 
@@ -56,7 +55,7 @@ Getting started with GNU Radio
 -----
 
  - Connect an antenna to the CH1 connector of the Zmod Digitizer module.
- - Download [SD card image zip file]({{ site.release-image }}) (more details about the SD card image can be found at [this link]({{ "/alpine/" | prepend: site.baseurl }})).
+ - Download [SD card image zip file]({{ site.release-image }}) (more details about the SD card image can be found at [this link]({% link alpine.md %})).
  - Copy the contents of the SD card image zip file to a micro SD card.
  - Optionally, to start the application automatically at boot time, copy its `start.sh` file from `apps/sdr_transceiver` to the topmost directory on the SD card.
  - Install the micro SD card in the Eclypse Z7 board and connect the power.
@@ -79,7 +78,7 @@ Getting started with SDR# and HDSDR
 -----
 
  - Connect an antenna to the CH1 connector of the Zmod Digitizer module.
- - Download [SD card image zip file]({{ site.release-image }}) (more details about the SD card image can be found at [this link]({{ "/alpine/" | prepend: site.baseurl }})).
+ - Download [SD card image zip file]({{ site.release-image }}) (more details about the SD card image can be found at [this link]({% link alpine.md %})).
  - Copy the contents of the SD card image zip file to a micro SD card.
  - Optionally, to start the application automatically at boot time, copy its `start.sh` file from `apps/sdr_transceiver` to the topmost directory on the SD card.
  - Install the micro SD card in the Eclypse Z7 board and connect the power.
@@ -94,7 +93,7 @@ Getting started with SDR# and HDSDR
 Building from source
 -----
 
-The structure of the source code and of the development chain is described at [this link]({{ "/led-blinker/" | prepend: site.baseurl }}).
+The structure of the source code and of the development chain is described at [this link]({% link led-blinker.md %}).
 
 Setting up the Vitis and Vivado environment:
 {% highlight bash %}

@@ -1,7 +1,6 @@
 ---
 layout: page
 title: Links
-permalink: /links/
 ---
 
  - [Digilent documentation for Eclypse Z7](https://digilent.com/reference/programmable-logic/eclypse-z7/start)

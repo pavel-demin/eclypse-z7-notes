@@ -1,11 +1,9 @@
 ---
-layout: page
 title: List of components
 ---
 The following is a list of components that can be used with Eclypse Z7.
 
-Premier Farnell
------
+## Premier Farnell
 
  - [SMA cable, SMA plug, SMA plug, RG-174, 30 cm](https://uk.farnell.com/jsp/search/productdetail.jsp?id=2144511)
 
@@ -15,8 +13,7 @@ Premier Farnell
 
  - [SMA terminator, 50 Ohm](https://uk.farnell.com/jsp/search/productdetail.jsp?id=2112480)
 
-Mini-Circuits
------
+## Mini-Circuits
 
  - [Low Pass Filter, DC-22 MHz](https://www.minicircuits.com/WebStore/dashboard.html?model=SLP-21.4%2B)
 

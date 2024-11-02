@@ -1,27 +1,24 @@
 ---
-layout: page
 title: SDR receiver compatible with HPSDR
 ---
 
-Introduction
------
+## Introduction
 
 This SDR receiver emulates two [Hermes](https://openhpsdr.org/hermes.php) modules with eight receivers. It may be useful for projects that require sixteen receivers compatible with the programs that support the HPSDR/Metis communication protocol.
 
 The HPSDR/Metis communication protocol is described in the following documents:
 
- - [Metis - How it works](https://github.com/TAPR/OpenHPSDR-SVN/raw/master/Metis/Documentation/Metis- How it works_V1.33.pdf)
+ - [Metis - How it works](https://github.com/TAPR/OpenHPSDR-SVN/raw/master/Metis/Documentation/Metis-%20How%20it%20works_V1.33.pdf)
 
  - [HPSDR - USB Data Protocol](https://github.com/TAPR/OpenHPSDR-SVN/raw/master/Documentation/USB_protocol_V1.58.doc)
 
 This application requires that the Zmod Digitizer is connected to the ZMOD A connector of the Eclypse Z7 board.
 
-Hardware
------
+## Hardware
 
 The FPGA configuration consists of sixteen identical digital down-converters (DDC). Their structure is shown in the following diagram:
 
-![HPSDR receiver]({% link img/sdr-receiver-hpsdr.png %})
+![HPSDR receiver](/img/sdr-receiver-hpsdr.png)
 
 The I/Q data rate is configurable and four settings are available: 48, 96, 192, 384 kSPS.
 
@@ -33,8 +30,7 @@ The [projects/sdr_receiver_hpsdr/filters](https://github.com/pavel-demin/eclypse
 
 The [projects/sdr_receiver_hpsdr/server](https://github.com/pavel-demin/eclypse-z7-notes/tree/master/projects/sdr_receiver_hpsdr/server) directory contains the source code of the UDP server ([sdr-receiver-hpsdr.c](https://github.com/pavel-demin/eclypse-z7-notes/blob/master/projects/sdr_receiver_hpsdr/server/sdr-receiver-hpsdr.c)) that receives control commands and transmits the I/Q data streams to the SDR programs.
 
-Software
------
+## Software
 
 This SDR receiver should work with most of the programs that support the HPSDR/Metis communication protocol:
 
@@ -50,17 +46,15 @@ This SDR receiver should work with most of the programs that support the HPSDR/M
 
  - [Java desktop application](https://g0orx.blogspot.com/2015/04/java-desktop-application-based-on.html) based on openHPSDR Android Application
 
-Getting started
------
+## Getting started
 
- - Download [SD card image zip file]({{ site.release-image }}) (more details about the SD card image can be found at [this link]({% link alpine.md %})).
+ - Download [SD card image zip file]({{ site.release_image }}) (more details about the SD card image can be found at [this link](/alpine.md)).
  - Copy the contents of the SD card image zip file to a micro SD card.
  - Optionally, to start the application automatically at boot time, copy its `start.sh` file from `apps/sdr_receiver_hpsdr` to the topmost directory on the SD card.
  - Install the micro SD card in the Eclypse Z7 board and connect the power.
  - Install and run one of the HPSDR programs.
 
-Running CW Skimmer Server and Reverse Beacon Network Aggregator
------
+## Running CW Skimmer Server and Reverse Beacon Network Aggregator
 
  - Install [CW Skimmer Server](https://dxatlas.com/skimserver).
  - Copy [HermesIntf.dll](https://github.com/k3it/HermesIntf/releases) to the CW Skimmer Server program directory (C:\Program Files (x86)\Afreet\SkimSrv).
@@ -71,28 +65,27 @@ Running CW Skimmer Server and Reverse Beacon Network Aggregator
  - Start `SkimSrv.exe` and `SkimSrv2.exe`, configure frequencies and your call sign.
  - Start Reverse Beacon Network Aggregator.
 
-Building from source
------
+## Building from source
 
-The structure of the source code and of the development chain is described at [this link]({% link led-blinker.md %}).
+The structure of the source code and of the development chain is described at [this link](/led-blinker.md).
 
 Setting up the Vitis and Vivado environment:
-{% highlight bash %}
+```bash
 source /opt/Xilinx/Vitis/2023.1/settings64.sh
-{% endhighlight %}
+```
 
 Cloning the source code repository:
-{% highlight bash %}
+```bash
 git clone https://github.com/pavel-demin/eclypse-z7-notes
 cd eclypse-z7-notes
-{% endhighlight %}
+```
 
 Building `sdr_receiver_hpsdr.bit`:
-{% highlight bash %}
+```bash
 make NAME=sdr_receiver_hpsdr bit
-{% endhighlight %}
+```
 
 Building SD card image zip file:
-{% highlight bash %}
+```bash
 source helpers/build-all.sh
-{% endhighlight %}
+```

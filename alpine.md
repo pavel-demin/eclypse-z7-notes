@@ -8,11 +8,11 @@ To simplify maintenance and distribution of the pre-built applications described
 
 ## Getting started
 
- - Download [SD card image zip file]({{ site.release_image }}).
- - Copy the contents of the SD card image zip file to a micro SD card.
- - Optionally, to start one of the applications automatically at boot time, copy its `start.sh` file from `apps/<application>` to the topmost directory on the SD card.
- - Install the micro SD card in the Eclypse Z7 board and connect the power.
- - Applications can be started from the web interface.
+- Download [SD card image zip file]({{ site.release_image }}).
+- Copy the contents of the SD card image zip file to a micro SD card.
+- Optionally, to start one of the applications automatically at boot time, copy its `start.sh` file from `apps/<application>` to the topmost directory on the SD card.
+- Install the micro SD card in the Eclypse Z7 board and connect the power.
+- Applications can be started from the web interface.
 
 The default password for the `root` account is `changeme`.
 
@@ -33,6 +33,7 @@ In the local networks with enabled local DNS, Eclypse Z7 can also be accessed as
 The [Alpine Wiki](https://wiki.alpinelinux.org) contains a lot of information about administrating [Alpine Linux](https://alpinelinux.org). The following is a list of some useful commands.
 
 Switching to client Wi-Fi mode:
+
 ```bash
 # configure WPA supplicant
 wpa_passphrase SSID PASSPHRASE > /etc/wpa_supplicant/wpa_supplicant.conf
@@ -45,6 +46,7 @@ lbu commit -d
 ```
 
 Switching to hotspot Wi-Fi mode:
+
 ```bash
 # configure services for hotspot Wi-Fi mode
 ./wifi/hotspot.sh
@@ -54,6 +56,7 @@ lbu commit -d
 ```
 
 Changing password:
+
 ```bash
 passwd
 
@@ -61,6 +64,7 @@ lbu commit -d
 ```
 
 Installing packages:
+
 ```bash
 apk add python3
 
@@ -68,6 +72,7 @@ lbu commit -d
 ```
 
 Editing a file:
+
 ```bash
 # make SD card writable
 rw

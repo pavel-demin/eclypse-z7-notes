@@ -50,7 +50,7 @@ The [projects/sdr_transceiver/gnuradio](https://github.com/pavel-demin/eclypse-z
 ## Getting started with GNU Radio
 
 - Connect an antenna to the CH1 connector of the Zmod Digitizer module.
-- Download [SD card image zip file]({{ site.release_image }}) (more details about the SD card image can be found at [this link](/alpine.md)).
+- Download [SD card image zip file]({{ site.release_image }}) (more details about the SD card image can be found at [this link](/alpine/)).
 - Copy the contents of the SD card image zip file to a micro SD card.
 - Optionally, to start the application automatically at boot time, copy its `start.sh` file from `apps/sdr_transceiver` to the topmost directory on the SD card.
 - Install the micro SD card in the Eclypse Z7 board and connect the power.
@@ -77,7 +77,7 @@ gnuradio-companion fm.grc
 ## Getting started with SDR# and HDSDR
 
 - Connect an antenna to the CH1 connector of the Zmod Digitizer module.
-- Download [SD card image zip file]({{ site.release_image }}) (more details about the SD card image can be found at [this link](/alpine.md)).
+- Download [SD card image zip file]({{ site.release_image }}) (more details about the SD card image can be found at [this link](/alpine/)).
 - Copy the contents of the SD card image zip file to a micro SD card.
 - Optionally, to start the application automatically at boot time, copy its `start.sh` file from `apps/sdr_transceiver` to the topmost directory on the SD card.
 - Install the micro SD card in the Eclypse Z7 board and connect the power.
@@ -91,7 +91,7 @@ gnuradio-companion fm.grc
 
 ## Building from source
 
-The structure of the source code and of the development chain is described at [this link](/led-blinker.md).
+The structure of the source code and of the development chain is described at [this link](/led-blinker/).
 
 Setting up the Vitis and Vivado environment:
 

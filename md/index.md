@@ -1,5 +1,6 @@
 ---
 layout: default.html
+permalink: /
 ---
 
 1. [List of components](/components/)

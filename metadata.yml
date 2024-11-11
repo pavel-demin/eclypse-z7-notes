@@ -2,8 +2,6 @@ site_title: Eclypse Z7 Notes
 
 description: Notes on the Eclypse Z7 development board
 
-baseurl: https://pavel-demin.github.io/eclypse-z7-notes
-
 source: https://github.com/pavel-demin/eclypse-z7-notes
 issues: https://github.com/pavel-demin/eclypse-z7-notes/issues
 

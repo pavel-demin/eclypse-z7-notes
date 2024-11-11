@@ -1,6 +1,4 @@
----
-title: LED blinker
----
+# LED blinker
 
 ## Introduction
 
@@ -107,7 +105,7 @@ Building an SD card image:
 sudo sh scripts/alpine.sh
 ```
 
-A pre-built SD card image can be downloaded from [this link]({{ site.release_image }}).
+A pre-built SD card image can be downloaded from [this link](release_image).
 
 To write the image to a micro SD card, copy the contents of the SD card image zip file to a micro SD card.
 

@@ -22,11 +22,11 @@ The I/Q data rate is configurable and four settings are available: 48, 96, 192, 
 
 The tunable frequency range covers from 0 Hz to 61.44 MHz.
 
-The [projects/sdr_receiver_hpsdr](https://github.com/pavel-demin/eclypse-z7-notes/tree/master/projects/sdr_receiver_hpsdr) directory contains two Tcl files: [block_design.tcl](https://github.com/pavel-demin/eclypse-z7-notes/blob/master/projects/sdr_receiver_hpsdr/block_design.tcl), [rx.tcl](https://github.com/pavel-demin/eclypse-z7-notes/blob/master/projects/sdr_receiver_hpsdr/rx.tcl). The code in these files instantiates, configures and interconnects all the needed IP cores.
+The [projects/sdr_receiver_hpsdr]($source$/projects/sdr_receiver_hpsdr) directory contains two Tcl files: [block_design.tcl]($source$/projects/sdr_receiver_hpsdr/block_design.tcl), [rx.tcl]($source$/projects/sdr_receiver_hpsdr/rx.tcl). The code in these files instantiates, configures and interconnects all the needed IP cores.
 
-The [projects/sdr_receiver_hpsdr/filters](https://github.com/pavel-demin/eclypse-z7-notes/tree/master/projects/sdr_receiver_hpsdr/filters) directory contains the source code of the [R](https://www.r-project.org) script used to calculate the coefficients of the FIR filters.
+The [projects/sdr_receiver_hpsdr/filters]($source$/projects/sdr_receiver_hpsdr/filters) directory contains the source code of the [R](https://www.r-project.org) script used to calculate the coefficients of the FIR filters.
 
-The [projects/sdr_receiver_hpsdr/server](https://github.com/pavel-demin/eclypse-z7-notes/tree/master/projects/sdr_receiver_hpsdr/server) directory contains the source code of the UDP server ([sdr-receiver-hpsdr.c](https://github.com/pavel-demin/eclypse-z7-notes/blob/master/projects/sdr_receiver_hpsdr/server/sdr-receiver-hpsdr.c)) that receives control commands and transmits the I/Q data streams to the SDR programs.
+The [projects/sdr_receiver_hpsdr/server]($source$/projects/sdr_receiver_hpsdr/server) directory contains the source code of the UDP server ([sdr-receiver-hpsdr.c]($source$/projects/sdr_receiver_hpsdr/server/sdr-receiver-hpsdr.c)) that receives control commands and transmits the I/Q data streams to the SDR programs.
 
 ## Software
 
@@ -46,7 +46,7 @@ This SDR receiver should work with most of the programs that support the HPSDR/M
 
 ## Getting started
 
-- Download [SD card image zip file](release_image) (more details about the SD card image can be found at [this link](/alpine/)).
+- Download [SD card image zip file]($release_image$) (more details about the SD card image can be found at [this link](/alpine/)).
 - Copy the contents of the SD card image zip file to a micro SD card.
 - Optionally, to start the application automatically at boot time, copy its `start.sh` file from `apps/sdr_receiver_hpsdr` to the topmost directory on the SD card.
 - Install the micro SD card in the Eclypse Z7 board and connect the power.

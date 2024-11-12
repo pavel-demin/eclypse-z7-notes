@@ -2,7 +2,7 @@ site_title: Eclypse Z7 Notes
 
 description: Notes on the Eclypse Z7 development board
 
-source: https://github.com/pavel-demin/eclypse-z7-notes
+source: https://github.com/pavel-demin/eclypse-z7-notes/tree/master
 issues: https://github.com/pavel-demin/eclypse-z7-notes/issues
 
 release_image: https://github.com/pavel-demin/eclypse-z7-notes/releases/download/20230222/eclypse-z7-alpine-3.14-armv7-20230222.zip

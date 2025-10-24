@@ -1,25 +1,31 @@
 #include <linux/miscdevice.h>
 #include <linux/module.h>
-#include <linux/uaccess.h>
-#include <linux/dma-mapping.h>
 #include <linux/dma-map-ops.h>
 
 #define CMA_ALLOC _IOWR('Z', 0, u32)
 
-static struct device *dma_device = NULL;
-static size_t dma_size = 0;
-static void *cpu_addr = NULL;
-static dma_addr_t dma_addr;
+static unsigned long cma_size = 0;
+static struct page *cma_page = NULL;
+static struct page **cma_pages = NULL;
 
 static void cma_free(void)
 {
-  if(!cpu_addr) return;
-  dma_free_coherent(dma_device, dma_size, cpu_addr, dma_addr);
-  cpu_addr = NULL;
+  if(cma_pages)
+  {
+    kfree(cma_pages);
+    cma_pages = NULL;
+  }
+
+  if(cma_page)
+  {
+    dma_release_from_contiguous(NULL, cma_page, cma_size);
+    cma_page = NULL;
+  }
 }
 
 static long cma_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
+  int i;
   long rc;
   u32 buffer;
 
@@ -30,24 +36,31 @@ static long cma_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
   cma_free();
 
-  dma_size = buffer;
-  cpu_addr = dma_alloc_coherent(dma_device, dma_size, &dma_addr, GFP_KERNEL);
+  cma_size = PAGE_ALIGN(buffer) >> PAGE_SHIFT;
 
-  if(IS_ERR_OR_NULL(cpu_addr))
+  cma_pages = kmalloc_array(cma_size, sizeof(struct page *), GFP_KERNEL);
+
+  if(!cma_pages) return -ENOMEM;
+
+  cma_page = dma_alloc_from_contiguous(NULL, cma_size, 0, false);
+
+  if(!cma_page)
   {
-    rc = PTR_ERR(cpu_addr);
-    if(rc == 0) rc = -ENOMEM;
-    cpu_addr = NULL;
-    return rc;
+    cma_free();
+    return -ENOMEM;
   }
 
-  buffer = dma_addr;
+  for(i = 0; i < cma_size; ++i) cma_pages[i] = &cma_page[i];
+
+  buffer = page_to_phys(cma_page);
   return copy_to_user((void __user *)arg, &buffer, sizeof(buffer));
 }
 
 static int cma_mmap(struct file *file, struct vm_area_struct *vma)
 {
-  return dma_mmap_coherent(dma_device, vma, cpu_addr, dma_addr, dma_size);
+  if(!cma_pages) return -ENXIO;
+  vm_flags_set(vma, VM_MIXEDMAP);
+  return vm_map_pages(vma, cma_pages, cma_size);
 }
 
 static int cma_release(struct inode *inode, struct file *file)
@@ -72,17 +85,7 @@ struct miscdevice cma_device =
 
 static int __init cma_init(void)
 {
-  int rc;
-
-  rc = misc_register(&cma_device);
-  if(rc) return rc;
-
-  dma_device = cma_device.this_device;
-
-  dma_device->dma_coherent = true;
-  dma_device->coherent_dma_mask = DMA_BIT_MASK(32);
-
-  return 0;
+  return misc_register(&cma_device);
 }
 
 static void __exit cma_exit(void)

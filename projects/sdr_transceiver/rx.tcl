@@ -1,20 +1,20 @@
 # Create port_slicer
-cell pavel-demin:user:port_slicer slice_0 {
+cell port_slicer slice_0 {
   DIN_WIDTH 8 DIN_FROM 0 DIN_TO 0
 }
 
 # Create port_slicer
-cell pavel-demin:user:port_slicer slice_1 {
+cell port_slicer slice_1 {
   DIN_WIDTH 64 DIN_FROM 39 DIN_TO 0
 }
 
 # Create port_slicer
-cell pavel-demin:user:port_slicer slice_2 {
+cell port_slicer slice_2 {
   DIN_WIDTH 64 DIN_FROM 63 DIN_TO 48
 }
 
 # Create axis_constant
-cell pavel-demin:user:axis_constant phase_0 {
+cell axis_constant phase_0 {
   AXIS_TDATA_WIDTH 40
 } {
   cfg_data slice_1/dout
@@ -39,7 +39,7 @@ cell xilinx.com:ip:dds_compiler dds_0 {
 }
 
 # Create axis_lfsr
-cell pavel-demin:user:axis_lfsr lfsr_0 {} {
+cell axis_lfsr lfsr_0 {} {
   aclk /pll_0/clk_out1
   aresetn /rst_0/peripheral_aresetn
 }
@@ -73,7 +73,7 @@ cell xilinx.com:ip:axis_broadcaster bcast_0 {
 }
 
 # Create axis_variable
-cell pavel-demin:user:axis_variable rate_0 {
+cell axis_variable rate_0 {
   AXIS_TDATA_WIDTH 16
 } {
   cfg_data slice_2/dout
@@ -82,7 +82,7 @@ cell pavel-demin:user:axis_variable rate_0 {
 }
 
 # Create axis_variable
-cell pavel-demin:user:axis_variable rate_1 {
+cell axis_variable rate_1 {
   AXIS_TDATA_WIDTH 16
 } {
   cfg_data slice_2/dout
@@ -223,7 +223,7 @@ cell xilinx.com:ip:axis_dwidth_converter conv_1 {
 }
 
 # Create axis_fifo
-cell pavel-demin:user:axis_fifo fifo_0 {
+cell axis_fifo fifo_0 {
   S_AXIS_TDATA_WIDTH 64
   M_AXIS_TDATA_WIDTH 32
   WRITE_DEPTH 4096

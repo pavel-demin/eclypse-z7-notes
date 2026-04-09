@@ -9,9 +9,10 @@ file delete -force tmp/$project_name.cache tmp/$project_name.gen tmp/$project_na
 
 create_project -part $part_name $project_name tmp
 
-set_property IP_REPO_PATHS tmp/cores [current_project]
-
-update_ip_catalog
+set files [glob -nocomplain cores/*.v modules/*.v]
+if {[llength $files] > 0} {
+  add_files -norecurse $files
+}
 
 proc wire {name1 name2} {
   set port1 [get_bd_pins $name1]
@@ -30,7 +31,14 @@ proc wire {name1 name2} {
 }
 
 proc cell {cell_vlnv cell_name {cell_props {}} {cell_ports {}}} {
-  set cell [create_bd_cell -type ip -vlnv $cell_vlnv $cell_name]
+  switch -glob $cell_vlnv {
+    *:ip:* {
+      set cell [create_bd_cell -type ip -vlnv $cell_vlnv $cell_name]
+    }
+    default {
+      set cell [create_bd_cell -type module -reference $cell_vlnv $cell_name]
+    }
+  }
   set prop_list {}
   foreach {prop_name prop_value} [uplevel 1 [list subst $cell_props]] {
     lappend prop_list CONFIG.$prop_name $prop_value

@@ -23,7 +23,7 @@ cell xilinx.com:ip:processing_system7 ps_0 {
 }
 
 # Create cdce_iic
-cell pavel-demin:user:cdce_iic iic_0 {
+cell cdce_iic iic_0 {
   DATA_SIZE 132
   DATA_FILE cdce_122_88.mem
 } {
@@ -32,13 +32,13 @@ cell pavel-demin:user:cdce_iic iic_0 {
 }
 
 # Create cdce_gpio
-cell pavel-demin:user:cdce_gpio gpio_0 {} {
+cell cdce_gpio gpio_0 {} {
   gpio cdce_gpio_tri_io
   aclk ps_0/FCLK_CLK0
 }
 
 # Create dac_gpio
-cell pavel-demin:user:dac_gpio gpio_1 {} {
+cell dac_gpio gpio_1 {} {
   gpio dac_tri_io
   aclk ps_0/FCLK_CLK0
 }
@@ -63,7 +63,7 @@ cell xilinx.com:ip:proc_sys_reset rst_0 {} {
 # ADC
 
 # Create axis_zmod_dac
-cell pavel-demin:user:axis_zmod_adc adc_0 {
+cell axis_zmod_adc adc_0 {
   ADC_DATA_WIDTH 14
 } {
   aclk pll_0/clk_out1
@@ -96,7 +96,7 @@ cell  xilinx.com:ip:axis_combiner comb_0 {
 }
 
 # Create axis_zmod_dac
-cell pavel-demin:user:axis_zmod_dac dac_0 {
+cell axis_zmod_dac dac_0 {
   DAC_DATA_WIDTH 14
 } {
   aclk pll_0/clk_out1
@@ -127,7 +127,7 @@ module trx_1 {
 # ADC SPI
 
 # Create axis_fifo
-cell pavel-demin:user:axis_fifo fifo_0 {
+cell axis_fifo fifo_0 {
   S_AXIS_TDATA_WIDTH 32
   M_AXIS_TDATA_WIDTH 32
   WRITE_DEPTH 1024
@@ -138,7 +138,7 @@ cell pavel-demin:user:axis_fifo fifo_0 {
 }
 
 # Create axis_spi
-cell pavel-demin:user:axis_spi spi_0 {
+cell axis_spi spi_0 {
   SPI_DATA_WIDTH 24
 } {
   S_AXIS fifo_0/M_AXIS
@@ -150,7 +150,7 @@ cell pavel-demin:user:axis_spi spi_0 {
 # DAC SPI
 
 # Create axis_data_fifo
-cell pavel-demin:user:axis_fifo fifo_1 {
+cell axis_fifo fifo_1 {
   S_AXIS_TDATA_WIDTH 32
   M_AXIS_TDATA_WIDTH 32
   WRITE_DEPTH 1024
@@ -161,7 +161,7 @@ cell pavel-demin:user:axis_fifo fifo_1 {
 }
 
 # Create axis_spi
-cell pavel-demin:user:axis_spi spi_1 {
+cell axis_spi spi_1 {
   SPI_DATA_WIDTH 16
 } {
   S_AXIS fifo_1/M_AXIS

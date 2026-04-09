@@ -1,5 +1,5 @@
 # Create axi_hub
-cell pavel-demin:user:axi_hub hub_0 {
+cell axi_hub hub_0 {
   CFG_DATA_WIDTH 288
   STS_DATA_WIDTH 32
 } {
@@ -8,14 +8,14 @@ cell pavel-demin:user:axi_hub hub_0 {
 }
 
 # Create port_slicer
-cell pavel-demin:user:port_slicer slice_0 {
+cell port_slicer slice_0 {
   DIN_WIDTH 288 DIN_FROM 0 DIN_TO 0
 } {
   din hub_0/cfg_data
 }
 
 # Create port_slicer
-cell pavel-demin:user:port_slicer slice_1 {
+cell port_slicer slice_1 {
   DIN_WIDTH 288 DIN_FROM 31 DIN_TO 16
 } {
   din hub_0/cfg_data
@@ -24,14 +24,14 @@ cell pavel-demin:user:port_slicer slice_1 {
 for {set i 0} {$i <= 7} {incr i} {
 
   # Create port_slicer
-  cell pavel-demin:user:port_slicer slice_[expr $i + 2] {
+  cell port_slicer slice_[expr $i + 2] {
     DIN_WIDTH 288 DIN_FROM [expr $i + 8] DIN_TO [expr $i + 8]
   } {
     din hub_0/cfg_data
   }
 
   # Create port_selector
-  cell pavel-demin:user:port_selector selector_$i {
+  cell port_selector selector_$i {
     DOUT_WIDTH 16
   } {
     cfg slice_[expr $i + 2]/dout
@@ -39,14 +39,14 @@ for {set i 0} {$i <= 7} {incr i} {
   }
 
   # Create port_slicer
-  cell pavel-demin:user:port_slicer slice_[expr $i + 10] {
+  cell port_slicer slice_[expr $i + 10] {
     DIN_WIDTH 288 DIN_FROM [expr 32 * $i + 63] DIN_TO [expr 32 * $i + 32]
   } {
     din hub_0/cfg_data
   }
 
   # Create dds
-  cell pavel-demin:user:dds dds_$i {
+  cell dds dds_$i {
     NEGATIVE_SINE TRUE
   } {
     pinc slice_[expr $i + 10]/dout
@@ -62,14 +62,14 @@ cell xilinx.com:ip:xlconstant const_0
 for {set i 0} {$i <= 15} {incr i} {
 
   # Create port_slicer
-  cell pavel-demin:user:port_slicer dds_slice_$i {
+  cell port_slicer dds_slice_$i {
     DIN_WIDTH 48 DIN_FROM [expr 24 * ($i % 2) + 23] DIN_TO [expr 24 * ($i % 2)]
   } {
     din dds_[expr $i / 2]/dout
   }
 
   # Create dsp48
-  cell pavel-demin:user:dsp48 mult_$i {
+  cell dsp48 mult_$i {
     A_WIDTH 24
     B_WIDTH 14
     P_WIDTH 24
@@ -80,7 +80,7 @@ for {set i 0} {$i <= 15} {incr i} {
   }
 
   # Create axis_variable
-  cell pavel-demin:user:axis_variable rate_$i {
+  cell axis_variable rate_$i {
     AXIS_TDATA_WIDTH 16
   } {
     cfg_data slice_1/dout
@@ -199,7 +199,7 @@ cell xilinx.com:ip:axis_subset_converter subset_0 {
 }
 
 # Create axis_fifo
-cell pavel-demin:user:axis_fifo fifo_0 {
+cell axis_fifo fifo_0 {
   S_AXIS_TDATA_WIDTH 384
   M_AXIS_TDATA_WIDTH 384
   WRITE_DEPTH 2048

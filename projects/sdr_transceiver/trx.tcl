@@ -1,5 +1,5 @@
 # Create axi_hub
-cell pavel-demin:user:axi_hub hub_0 {
+cell axi_hub hub_0 {
   CFG_DATA_WIDTH 160
   STS_DATA_WIDTH 32
 } {
@@ -8,28 +8,28 @@ cell pavel-demin:user:axi_hub hub_0 {
 }
 
 # Create port_slicer
-cell pavel-demin:user:port_slicer rst_slice_0 {
+cell port_slicer rst_slice_0 {
   DIN_WIDTH 160 DIN_FROM 7 DIN_TO 0
 } {
   din hub_0/cfg_data
 }
 
 # Create port_slicer
-cell pavel-demin:user:port_slicer rst_slice_1 {
+cell port_slicer rst_slice_1 {
   DIN_WIDTH 160 DIN_FROM 15 DIN_TO 8
 } {
   din hub_0/cfg_data
 }
 
 # Create port_slicer
-cell pavel-demin:user:port_slicer cfg_slice_0 {
+cell port_slicer cfg_slice_0 {
   DIN_WIDTH 160 DIN_FROM 95 DIN_TO 32
 } {
   din hub_0/cfg_data
 }
 
 # Create port_slicer
-cell pavel-demin:user:port_slicer cfg_slice_1 {
+cell port_slicer cfg_slice_1 {
   DIN_WIDTH 160 DIN_FROM 159 DIN_TO 96
 } {
   din hub_0/cfg_data

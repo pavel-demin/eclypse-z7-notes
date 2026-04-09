@@ -21,7 +21,7 @@ cell xilinx.com:ip:processing_system7 ps_0 {
 }
 
 # Create cdce_iic
-cell pavel-demin:user:cdce_iic iic_0 {
+cell cdce_iic iic_0 {
   DATA_SIZE 132
   DATA_FILE cdce_100.mem
 } {
@@ -30,7 +30,7 @@ cell pavel-demin:user:cdce_iic iic_0 {
 }
 
 # Create cdce_gpio
-cell pavel-demin:user:cdce_gpio gpio_0 {} {
+cell cdce_gpio gpio_0 {} {
   gpio cdce_gpio_tri_io
   aclk ps_0/FCLK_CLK0
 }
@@ -55,7 +55,7 @@ cell xilinx.com:ip:proc_sys_reset rst_0 {} {
 # HUB
 
 # Create axi_cfg_register
-cell pavel-demin:user:axi_hub hub_0 {
+cell axi_hub hub_0 {
   CFG_DATA_WIDTH 32
   STS_DATA_WIDTH 32
 } {
@@ -67,7 +67,7 @@ cell pavel-demin:user:axi_hub hub_0 {
 # FIFO
 
 # Create axis_fifo
-cell pavel-demin:user:axis_fifo fifo_0 {
+cell axis_fifo fifo_0 {
   S_AXIS_TDATA_WIDTH 32
   M_AXIS_TDATA_WIDTH 32
   WRITE_DEPTH 1024
@@ -88,7 +88,7 @@ create_bd_port -dir O -from 2 -to 0 pmod_a_tri_io
 # SPI
 
 # Create axis_spi
-cell pavel-demin:user:axis_spi spi_0 {
+cell axis_spi spi_0 {
   SPI_DATA_WIDTH 24
 } {
   S_AXIS fifo_0/M_AXIS

@@ -47,7 +47,7 @@ cell xilinx.com:ip:xlslice slice_0 {
 # CDCE IIC
 
 # Create cdce_iic
-cell pavel-demin:user:cdce_iic iic_0 {
+cell cdce_iic iic_0 {
   DATA_SIZE 132
   DATA_FILE cdce_100.mem
 } {
@@ -58,7 +58,7 @@ cell pavel-demin:user:cdce_iic iic_0 {
 # CDCE GPIO
 
 # Create cdce_gpio
-cell pavel-demin:user:cdce_gpio gpio_0 {} {
+cell cdce_gpio gpio_0 {} {
   gpio cdce_gpio_tri_io
   aclk ps_0/FCLK_CLK0
 }

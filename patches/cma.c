@@ -4,22 +4,22 @@
 
 #define CMA_ALLOC _IOWR('Z', 0, u32)
 
-static unsigned long cma_size = 0;
-static struct page *cma_page = NULL;
-static struct page **cma_pages = NULL;
+static unsigned long cma_page_count = 0;
+static struct page *cma_page_base = NULL;
+static struct page **cma_page_ptrs = NULL;
 
 static void cma_free(void)
 {
-  if(cma_pages)
+  if(cma_page_ptrs)
   {
-    kfree(cma_pages);
-    cma_pages = NULL;
+    kfree(cma_page_ptrs);
+    cma_page_ptrs = NULL;
   }
 
-  if(cma_page)
+  if(cma_page_base)
   {
-    dma_release_from_contiguous(NULL, cma_page, cma_size);
-    cma_page = NULL;
+    dma_release_from_contiguous(NULL, cma_page_base, cma_page_count);
+    cma_page_base = NULL;
   }
 }
 
@@ -36,31 +36,31 @@ static long cma_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
   cma_free();
 
-  cma_size = PAGE_ALIGN(buffer) >> PAGE_SHIFT;
+  cma_page_count = PAGE_ALIGN(buffer) >> PAGE_SHIFT;
 
-  cma_pages = kmalloc_array(cma_size, sizeof(struct page *), GFP_KERNEL);
+  cma_page_ptrs = kmalloc_array(cma_page_count, sizeof(struct page *), GFP_KERNEL);
 
-  if(!cma_pages) return -ENOMEM;
+  if(!cma_page_ptrs) return -ENOMEM;
 
-  cma_page = dma_alloc_from_contiguous(NULL, cma_size, 0, false);
+  cma_page_base = dma_alloc_from_contiguous(NULL, cma_page_count, 0, false);
 
-  if(!cma_page)
+  if(!cma_page_base)
   {
     cma_free();
     return -ENOMEM;
   }
 
-  for(i = 0; i < cma_size; ++i) cma_pages[i] = &cma_page[i];
+  for(i = 0; i < cma_page_count; ++i) cma_page_ptrs[i] = &cma_page_base[i];
 
-  buffer = page_to_phys(cma_page);
+  buffer = page_to_phys(cma_page_base);
   return copy_to_user((void __user *)arg, &buffer, sizeof(buffer));
 }
 
 static int cma_mmap(struct file *file, struct vm_area_struct *vma)
 {
-  if(!cma_pages) return -ENXIO;
+  if(!cma_page_ptrs) return -ENXIO;
   vm_flags_set(vma, VM_MIXEDMAP);
-  return vm_map_pages(vma, cma_pages, cma_size);
+  return vm_map_pages(vma, cma_page_ptrs, cma_page_count);
 }
 
 static int cma_release(struct inode *inode, struct file *file)

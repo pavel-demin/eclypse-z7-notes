@@ -20,7 +20,7 @@ My development machine has the following installed:
 
 - [Debian](https://www.debian.org/releases/bookworm) 12 (amd64)
 
-- [Vitis Core Development Kit](https://www.xilinx.com/products/design-tools/vitis.html) 2023.1
+- [Vitis Core Development Kit](https://www.xilinx.com/products/design-tools/vitis.html) 2025.2
 
 Here are the commands to install all the other required packages:
 
@@ -81,7 +81,7 @@ The `cell` command and other helper commands are defined in the [scripts/project
 Setting up the Vitis and Vivado environment:
 
 ```bash
-source /opt/Xilinx/Vitis/2023.1/settings64.sh
+source /opt/Xilinx/2025.2/Vitis/settings64.sh
 ```
 
 Cloning the source code repository:

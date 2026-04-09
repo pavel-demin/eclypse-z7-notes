@@ -4,7 +4,7 @@
 
 For my experiments with the Eclypse Z7 board, I'd like to have the following development environment:
 
-- recent version of the [Vitis Core Development Kit](https://www.xilinx.com/products/design-tools/vitis.html)
+- recent version of the [Vitis Core Development Kit](https://www.amd.com/en/products/software/adaptive-socs-and-fpgas/vitis.html)
 - recent version of the [Linux kernel](https://www.kernel.org)
 - recent version of the [Debian distribution](https://www.debian.org/releases/bookworm) on the development machine
 - recent version of the [Alpine distribution](https://alpinelinux.org) on the Eclypse Z7 board
@@ -20,7 +20,7 @@ My development machine has the following installed:
 
 - [Debian](https://www.debian.org/releases/bookworm) 12 (amd64)
 
-- [Vitis Core Development Kit](https://www.xilinx.com/products/design-tools/vitis.html) 2025.2
+- [Vitis Core Development Kit](https://www.amd.com/en/products/software/adaptive-socs-and-fpgas/vitis.html) 2025.2
 
 Here are the commands to install all the other required packages:
 

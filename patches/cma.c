@@ -26,13 +26,11 @@ static void cma_free(void)
 static long cma_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
   int i;
-  long rc;
   u32 buffer;
 
   if(cmd != CMA_ALLOC) return -ENOTTY;
 
-  rc = copy_from_user(&buffer, (void __user *)arg, sizeof(buffer));
-  if(rc) return rc;
+  if(copy_from_user(&buffer, (void __user *)arg, sizeof(buffer))) return -EFAULT;
 
   cma_free();
 
@@ -53,7 +51,10 @@ static long cma_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
   for(i = 0; i < cma_page_count; ++i) cma_page_ptrs[i] = &cma_page_base[i];
 
   buffer = page_to_phys(cma_page_base);
-  return copy_to_user((void __user *)arg, &buffer, sizeof(buffer));
+
+  if(copy_to_user((void __user *)arg, &buffer, sizeof(buffer))) return -EFAULT;
+
+  return 0;
 }
 
 static int cma_mmap(struct file *file, struct vm_area_struct *vma)

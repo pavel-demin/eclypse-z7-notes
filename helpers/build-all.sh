@@ -1,4 +1,4 @@
-source /opt/Xilinx/2025.1/Vitis/settings64.sh
+source /opt/Xilinx/2025.2/Vitis/settings64.sh
 
 JOBS=`nproc 2> /dev/null || echo 1`
 

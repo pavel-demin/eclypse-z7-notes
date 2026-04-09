@@ -14,7 +14,7 @@ RM = rm -rf
 
 INITRAMFS_TAG = 3.22
 LINUX_TAG = 6.12
-DTREE_TAG = xilinx_v2025.1
+DTREE_TAG = xilinx_v2025.2
 
 INITRAMFS_DIR = tmp/initramfs-$(INITRAMFS_TAG)
 LINUX_DIR = tmp/linux-$(LINUX_TAG)
